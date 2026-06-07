@@ -1,0 +1,441 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Toaster } from "@/components/ui/sonner";
+import { Button } from "@/components/ui/button";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  Sparkles,
+  ShieldCheck,
+  Zap,
+  ArrowRight,
+  Lock,
+  Download,
+  CreditCard,
+} from "lucide-react";
+import { motion } from "framer-motion";
+
+export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Resume / CV Builder — Premium & ATS-Friendly Resumes" },
+      {
+        name: "description",
+        content:
+          "Build an ATS-friendly resume in minutes. No signup, no passwords, no hidden subscriptions. Completely free to build and download.",
+      },
+      { property: "og:title", content: "Resume / CV Builder" },
+      {
+        property: "og:description",
+        content:
+          "Create a professional, ATS-optimized resume in minutes. Free to download. No account required.",
+      },
+    ],
+  }),
+  component: LandingPage,
+});
+
+function LandingPage() {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.1,
+      },
+    },
+  } as any;
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 15,
+      },
+    },
+  } as any;
+
+  const badgeVariants = {
+    hidden: { opacity: 0, scale: 0.9, y: 10 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 120,
+        damping: 14,
+      },
+    },
+  } as any;
+
+  return (
+    <div className="min-h-screen bg-background text-foreground selection:bg-saffron/30 select-none relative overflow-hidden">
+      <Toaster />
+      
+      {/* Background Decorative Ambient Blobs */}
+      <div className="absolute top-[15%] left-[-10%] w-72 sm:w-96 h-72 sm:h-96 bg-saffron/10 rounded-full blur-[100px] sm:blur-[140px] pointer-events-none animate-blob" />
+      <div className="absolute top-[35%] right-[-10%] w-72 sm:w-96 h-72 sm:h-96 bg-primary/5 rounded-full blur-[100px] sm:blur-[140px] pointer-events-none animate-blob animation-delay-2000" />
+      
+      {/* Header */}
+      <header className="border-b bg-paper/60 backdrop-blur sticky top-0 z-30 transition-all duration-200">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+          <div className="font-display text-xl font-bold tracking-tight">
+            Resume / CV Builder
+          </div>
+          <Button asChild className="font-medium cursor-pointer hidden sm:inline-flex">
+            <Link to="/builder">
+              Create Resume <ArrowRight className="w-4 h-4 ml-1.5" />
+            </Link>
+          </Button>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="relative overflow-hidden py-16 sm:py-24 max-w-6xl mx-auto px-4 sm:px-6 grid lg:grid-cols-12 gap-12 items-center">
+        <motion.div 
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="lg:col-span-7 text-left space-y-6"
+        >
+          <motion.div 
+            variants={badgeVariants}
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-saffron/10 text-saffron font-medium text-xs border border-saffron/20 w-fit"
+          >
+            <Sparkles className="w-3.5 h-3.5" /> Premium & ATS-friendly
+          </motion.div>
+          
+          <motion.h1 
+            variants={itemVariants}
+            className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight text-ink font-display"
+          >
+            The professional resume you need.{" "}
+            <br className="hidden sm:block" />
+            Completely <span className="text-saffron">Free</span>.
+          </motion.h1>
+          
+          <motion.p 
+            variants={itemVariants}
+            className="text-base sm:text-lg text-muted-foreground max-w-xl leading-relaxed"
+          >
+            Stop struggling with formatting or paying expensive monthly subscriptions. Build your ATS-optimized resume in 5 minutes. No account needed—your data stays in your browser.
+          </motion.p>
+
+          <motion.div 
+            variants={itemVariants}
+            className="flex flex-col sm:flex-row gap-4 pt-2"
+          >
+            <Button asChild size="lg" variant="saffron" className="w-full sm:w-auto py-6 text-base font-semibold">
+              <Link to="/builder">
+                Build Yours Now <ArrowRight className="w-5 h-5 ml-2 animate-pulse" />
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="w-full sm:w-auto py-6 text-base font-medium text-muted-foreground hover:text-foreground">
+              <a href="#features">
+                How It Works
+              </a>
+            </Button>
+          </motion.div>
+
+          <motion.div 
+            variants={itemVariants}
+            className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-4 text-xs text-muted-foreground border-t border-border max-w-md"
+          >
+            <div className="flex items-center gap-1.5 hover:text-foreground transition-colors">
+              <ShieldCheck className="w-4 h-4 text-emerald-600" /> No signup required
+            </div>
+            <div className="flex items-center gap-1.5 hover:text-foreground transition-colors">
+              <Lock className="w-4 h-4 text-emerald-600" /> Privacy first (local storage)
+            </div>
+            <div className="flex items-center gap-1.5 hover:text-foreground transition-colors">
+              <Zap className="w-4 h-4 text-emerald-600" /> Completely free, no payments
+            </div>
+          </motion.div>
+        </motion.div>
+
+        {/* Decorative Floating Resume Mockup */}
+        <div className="lg:col-span-5 flex justify-center px-8 sm:px-0">
+          <motion.div 
+            initial={{ opacity: 0, y: 30, scale: 0.95 }}
+            animate={{ 
+              opacity: 1, 
+              y: [0, -10, 0],
+              scale: 1,
+            }}
+            transition={{ 
+              opacity: { duration: 0.6 },
+              scale: { duration: 0.6 },
+              y: { 
+                repeat: Infinity, 
+                duration: 5, 
+                ease: "easeInOut" 
+              }
+            }}
+            className="w-full max-w-[280px] sm:max-w-[360px] aspect-[210/297] paper-card p-4 sm:p-6 relative overflow-hidden flex flex-col justify-between group cursor-pointer transition-all duration-300 hover:border-saffron hover:border-b-[6px] hover:border-r-[3px]"
+          >
+            {/* Saffron border indicator */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-saffron" />
+            
+            <div className="space-y-4">
+              <div className="space-y-1">
+                <div className="h-4 w-28 bg-muted rounded animate-pulse" />
+                <div className="h-2 w-48 bg-muted rounded/60" />
+              </div>
+              <div className="h-[1px] bg-border" />
+              
+              <div className="space-y-3">
+                <div className="h-2.5 w-16 bg-muted/80 rounded" />
+                <div className="space-y-1.5">
+                  <div className="h-2 w-full bg-muted/40 rounded" />
+                  <div className="h-2 w-[90%] bg-muted/40 rounded" />
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="h-2.5 w-16 bg-muted/80 rounded" />
+                <div className="space-y-1.5">
+                  <div className="h-2 w-full bg-muted/40 rounded" />
+                  <div className="h-2 w-[95%] bg-muted/40 rounded" />
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-auto pt-6 flex items-center justify-between">
+              <div className="flex gap-1">
+                <div className="h-3 w-8 bg-muted/50 rounded" />
+                <div className="h-3 w-12 bg-muted/50 rounded" />
+                <div className="h-3 w-10 bg-muted/50 rounded" />
+              </div>
+              <div className="h-4 w-4 bg-saffron/10 rounded-full flex items-center justify-center">
+                <div className="h-1.5 w-1.5 bg-saffron rounded-full" />
+              </div>
+            </div>
+            
+            {/* Glassy overlay on hover */}
+            <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-8">
+              <div className="bg-paper/90 backdrop-blur-sm border border-border px-4 py-2 rounded-full text-xs font-semibold shadow-soft flex items-center gap-1.5">
+                <Download className="w-3.5 h-3.5 text-saffron" /> ATS-Friendly PDF
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Features Grid */}
+      <section id="features" className="py-20 border-t border-border bg-paper/30">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="text-center space-y-3 max-w-xl mx-auto mb-16">
+            <h2 className="text-3xl font-bold tracking-tight font-display text-ink">
+              Everything you need, nothing you don't.
+            </h2>
+            <p className="text-muted-foreground text-sm sm:text-base">
+              A minimalist, modern approach designed for candidates who value their time and data.
+            </p>
+          </div>
+
+          <motion.div 
+            variants={{
+              hidden: {},
+              visible: {
+                transition: {
+                  staggerChildren: 0.1
+                }
+              }
+            }}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          >
+            <motion.div 
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  transition: { type: "spring", stiffness: 80, damping: 15 }
+                }
+              }}
+              className="paper-card p-6 space-y-4 cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:border-saffron hover:border-b-[6px] hover:border-r-[3px] active:translate-y-[2px] active:border-b-[2px] active:border-r-[1px] group"
+            >
+              <motion.div 
+                variants={{
+                  hover: { scale: 1.15, rotate: [0, -10, 10, 0] }
+                }}
+                whileHover="hover"
+                className="w-10 h-10 rounded-lg bg-saffron/10 text-saffron flex items-center justify-center transition-colors group-hover:bg-saffron/20"
+              >
+                <Zap className="w-5 h-5" />
+              </motion.div>
+              <h3 className="font-bold text-lg">Instant Start</h3>
+              <p className="text-muted-foreground text-xs leading-relaxed">
+                No username, no password, no email verification. Jump straight into the builder and finish your resume instantly.
+              </p>
+            </motion.div>
+
+            <motion.div 
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  transition: { type: "spring", stiffness: 80, damping: 15 }
+                }
+              }}
+              className="paper-card p-6 space-y-4 cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:border-saffron hover:border-b-[6px] hover:border-r-[3px] active:translate-y-[2px] active:border-b-[2px] active:border-r-[1px] group"
+            >
+              <motion.div 
+                variants={{
+                  hover: { scale: 1.15, rotate: [0, -10, 10, 0] }
+                }}
+                whileHover="hover"
+                className="w-10 h-10 rounded-lg bg-saffron/10 text-saffron flex items-center justify-center transition-colors group-hover:bg-saffron/20"
+              >
+                <ShieldCheck className="w-5 h-5" />
+              </motion.div>
+              <h3 className="font-bold text-lg">ATS-Optimized</h3>
+              <p className="text-muted-foreground text-xs leading-relaxed">
+                Our templates follow exact ATS layout standards (single-column, real text, clean formatting) to maximize interview rates.
+              </p>
+            </motion.div>
+
+            <motion.div 
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  transition: { type: "spring", stiffness: 80, damping: 15 }
+                }
+              }}
+              className="paper-card p-6 space-y-4 cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:border-saffron hover:border-b-[6px] hover:border-r-[3px] active:translate-y-[2px] active:border-b-[2px] active:border-r-[1px] group"
+            >
+              <motion.div 
+                variants={{
+                  hover: { scale: 1.15, rotate: [0, -10, 10, 0] }
+                }}
+                whileHover="hover"
+                className="w-10 h-10 rounded-lg bg-saffron/10 text-saffron flex items-center justify-center transition-colors group-hover:bg-saffron/20"
+              >
+                <Lock className="w-5 h-5" />
+              </motion.div>
+              <h3 className="font-bold text-lg">Privacy First</h3>
+              <p className="text-muted-foreground text-xs leading-relaxed">
+                Your personal details stay in your browser's local storage. We do not store or sell your personal details.
+              </p>
+            </motion.div>
+
+            <motion.div 
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  transition: { type: "spring", stiffness: 80, damping: 15 }
+                }
+              }}
+              className="paper-card p-6 space-y-4 cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:border-saffron hover:border-b-[6px] hover:border-r-[3px] active:translate-y-[2px] active:border-b-[2px] active:border-r-[1px] group"
+            >
+              <motion.div 
+                variants={{
+                  hover: { scale: 1.15, rotate: [0, -10, 10, 0] }
+                }}
+                whileHover="hover"
+                className="w-10 h-10 rounded-lg bg-saffron/10 text-saffron flex items-center justify-center transition-colors group-hover:bg-saffron/20"
+              >
+                <Zap className="w-5 h-5" />
+              </motion.div>
+              <h3 className="font-bold text-lg">100% Free</h3>
+              <p className="text-muted-foreground text-xs leading-relaxed">
+                Completely free to use, edit, and download. No hidden premium features, no credit card, no ads, and no watermarks.
+              </p>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-20 border-t border-border">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6">
+          <div className="text-center space-y-3 mb-12">
+            <h2 className="text-3xl font-bold tracking-tight font-display text-ink">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-muted-foreground text-sm">
+              Answers to everything you want to know about our builder.
+            </p>
+          </div>
+
+          <Accordion type="single" collapsible className="w-full space-y-4">
+            <AccordionItem value="item-1" className="border border-border rounded-lg bg-paper px-4">
+              <AccordionTrigger className="font-semibold py-4 hover:no-underline">
+                Is it really completely free? Are there hidden fees?
+              </AccordionTrigger>
+              <AccordionContent className="text-muted-foreground pb-4 text-xs leading-relaxed">
+                Yes, completely free. There are no hidden fees, paywalls, or subscriptions. We built this to solve the frustrating problem of resume sites hiding paywalls after you spend an hour building.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-2" className="border border-border rounded-lg bg-paper px-4">
+              <AccordionTrigger className="font-semibold py-4 hover:no-underline">
+                Is this template really ATS-friendly?
+              </AccordionTrigger>
+              <AccordionContent className="text-muted-foreground pb-4 text-xs leading-relaxed">
+                Yes. Applicant Tracking Systems (ATS) read resumes linearly and parse the text content. Our Classic template uses standard fonts (Helvetica), structured section headers, and outputs clean semantic text in a single-column layout—guaranteed to be fully parsed.
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-3" className="border border-border rounded-lg bg-paper px-4">
+              <AccordionTrigger className="font-semibold py-4 hover:no-underline">
+                Where is my data stored?
+              </AccordionTrigger>
+              <AccordionContent className="text-muted-foreground pb-4 text-xs leading-relaxed">
+                Your data is stored strictly in your browser's local storage (SessionStorage). It never leaves your machine until you submit the PDF request.
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="py-20 border-t border-border bg-gradient-to-b from-paper/30 to-background text-center space-y-6">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6">
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight font-display text-ink">
+            Ready to land your dream job?
+          </h2>
+          <p className="text-muted-foreground max-w-md mx-auto text-sm sm:text-base mb-6">
+            Join thousands of successful candidates who built professional, clean resumes on our platform.
+          </p>
+          <Button asChild size="lg" variant="saffron" className="w-full sm:w-auto py-6 text-base font-semibold">
+            <Link to="/builder">
+              Create My Resume Now <ArrowRight className="w-5 h-5 ml-2" />
+            </Link>
+          </Button>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-border py-8 bg-paper/40">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
+          <div>
+            © {new Date().getFullYear()} Resume / CV Builder. All rights reserved.
+          </div>
+          <div className="flex gap-4">
+            <span className="hover:text-foreground cursor-pointer">Privacy Policy</span>
+            <span className="hover:text-foreground cursor-pointer">Terms of Service</span>
+            <span className="hover:text-foreground cursor-pointer">Support</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
