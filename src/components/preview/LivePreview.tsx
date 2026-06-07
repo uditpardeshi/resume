@@ -1,17 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import type { ResumeData } from "@/lib/resume-schema";
 import { useResumeStore } from "@/store/useResumeStore";
-import { Button } from "@/components/ui/button";
-import { FileText, ExternalLink, Download } from "lucide-react";
+import { FileText, ShieldCheck } from "lucide-react";
 
 // Real-time PDF preview fetched directly from the backend API.
 // Debounced to prevent excessive server requests during typing.
+// Preview is strictly read-only — no download, no open-in-tab.
 
 export function LivePreview({ data }: { data: ResumeData }) {
   const { template } = useResumeStore();
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [showRightClickMsg, setShowRightClickMsg] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -24,6 +25,34 @@ export function LivePreview({ data }: { data: ResumeData }) {
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // Block right-click on the entire preview component
+  const handleContextMenu = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowRightClickMsg(true);
+    setTimeout(() => setShowRightClickMsg(false), 2000);
+  }, []);
+
+  // Block keyboard shortcuts for saving / printing / devtools
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Block Ctrl+S, Ctrl+P, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, F12
+      if (
+        (e.ctrlKey && (e.key === "s" || e.key === "S")) ||
+        (e.ctrlKey && (e.key === "p" || e.key === "P")) ||
+        (e.ctrlKey && (e.key === "u" || e.key === "U")) ||
+        (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "i")) ||
+        (e.ctrlKey && e.shiftKey && (e.key === "J" || e.key === "j")) ||
+        e.key === "F12"
+      ) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   useEffect(() => {
@@ -69,12 +98,32 @@ export function LivePreview({ data }: { data: ResumeData }) {
   }, [pdfUrl]);
 
   return (
-    <div className="relative w-full aspect-[210/297] bg-paper border border-border rounded-sm shadow-soft overflow-hidden group">
+    <div
+      className="relative w-full aspect-[210/297] bg-paper border border-border rounded-sm shadow-soft overflow-hidden group select-none"
+      onContextMenu={handleContextMenu}
+      onDragStart={(e) => e.preventDefault()}
+      style={{ WebkitUserSelect: "none", userSelect: "none" }}
+    >
+      {/* Right-click blocked notification */}
+      {showRightClickMsg && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-ink/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-paper border-2 border-ink shadow-[4px_4px_0px_0px_var(--color-ink)] rounded-lg px-6 py-4 max-w-[260px] text-center">
+            <div className="w-10 h-10 rounded-full bg-saffron/15 text-saffron flex items-center justify-center mx-auto mb-2">
+              <ShieldCheck className="w-5 h-5" />
+            </div>
+            <p className="font-display text-sm font-bold text-ink">Not so smart! 😏</p>
+            <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed">
+              Right-click is disabled. Download your resume from the final step.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Premium stacked paper visual decoration behind the frame */}
-      <div 
+      <div
         className="absolute inset-0 bg-paper/40 border border-border rounded-sm translate-x-1 translate-y-1.5 rotate-[0.8deg] transition-transform duration-300 group-hover:rotate-[1.5deg] group-hover:translate-x-1.5 group-hover:translate-y-2 pointer-events-none z-0"
       />
-      <div 
+      <div
         className="absolute inset-0 bg-paper/80 border border-border rounded-sm -translate-x-1 translate-y-1 -rotate-[0.5deg] transition-transform duration-300 group-hover:-rotate-[1.2deg] group-hover:-translate-x-1.5 group-hover:translate-y-1.5 pointer-events-none z-0"
       />
 
@@ -85,46 +134,39 @@ export function LivePreview({ data }: { data: ResumeData }) {
             Syncing
           </div>
         )}
-        
+
         {pdfUrl ? (
           isMobile ? (
             <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-paper relative z-10">
-              <div className="w-12 h-12 rounded-full bg-saffron/10 text-saffron flex items-center justify-center mb-3 animate-bounce">
+              <div className="w-12 h-12 rounded-full bg-saffron/10 text-saffron flex items-center justify-center mb-3">
                 <FileText className="w-6 h-6" />
               </div>
-              <h3 className="font-display text-base font-bold text-ink mb-1">Live PDF Preview Ready</h3>
-              <p className="text-[11px] text-muted-foreground max-w-[280px] leading-relaxed mb-5">
-                Mobile browsers cannot render embedded PDF files inside web pages. 
-                Use the actions below to view or save your resume.
+              <h3 className="font-display text-base font-bold text-ink mb-1">Preview Ready</h3>
+              <p className="text-[11px] text-muted-foreground max-w-[280px] leading-relaxed mb-2">
+                Your resume preview is generated and ready.
+                Complete all steps and download your PDF from the final step.
               </p>
-              <div className="flex flex-col gap-2.5 w-full max-w-[200px]">
-                <Button 
-                  onClick={() => window.open(pdfUrl, "_blank")}
-                  variant="saffron" 
-                  className="w-full text-xs font-semibold py-4"
-                >
-                  <ExternalLink className="w-3.5 h-3.5 mr-1.5" /> View in New Tab
-                </Button>
-                <a 
-                  href={pdfUrl} 
-                  download={`${data.personal.fullName || "resume"}.pdf`}
-                  className="w-full"
-                >
-                  <Button 
-                    variant="outline" 
-                    className="w-full text-xs font-medium py-4 border-2 border-ink shadow-[2px_2px_0px_0px_var(--color-ink)]"
-                  >
-                    <Download className="w-3.5 h-3.5 mr-1.5" /> Download Preview
-                  </Button>
-                </a>
+              <div className="flex items-center gap-1.5 text-[10px] text-emerald-600 font-semibold mt-2">
+                <ShieldCheck className="w-3.5 h-3.5" /> Protected preview — download via Step 5
               </div>
             </div>
           ) : (
-            <iframe
-              src={`${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0`}
-              className="w-full h-full border-0 select-none pointer-events-none sm:pointer-events-auto"
-              title="Exact PDF Preview"
-            />
+            /* Desktop iframe preview — pointer-events-none blocks all interaction,
+               transparent overlay on top blocks right-click / drag / save-as */
+            <div className="relative w-full h-full">
+              <iframe
+                src={`${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0`}
+                className="w-full h-full border-0 select-none pointer-events-none"
+                title="Exact PDF Preview"
+              />
+              {/* Transparent shield overlay — blocks all direct interaction with iframe */}
+              <div
+                className="absolute inset-0 z-20"
+                onContextMenu={handleContextMenu}
+                onDragStart={(e) => e.preventDefault()}
+                style={{ cursor: "default" }}
+              />
+            </div>
           )
         ) : (
           <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground italic p-4 text-center">

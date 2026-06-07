@@ -12,7 +12,7 @@ import { AtsChecker } from "./preview/AtsChecker";
 import { Button } from "./ui/button";
 import { ResumeSchema } from "@/lib/resume-schema";
 import { ArrowLeft, ArrowRight, Eye, Loader2 } from "lucide-react";
-import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
+import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from "./ui/dialog";
 import { toast } from "sonner";
 
 const STEP_COMPONENTS = [
@@ -158,7 +158,9 @@ export function ResumeBuilder() {
                   <Eye className="w-4 h-4 mr-1.5" /> Preview
                 </Button>
               </DialogTrigger>
-              <DialogContent className="max-w-md sm:max-w-lg p-4">
+              <DialogContent className="max-w-md sm:max-w-lg p-4" aria-describedby="preview-dialog-desc">
+                <DialogTitle className="sr-only">Resume Preview</DialogTitle>
+                <DialogDescription id="preview-dialog-desc" className="sr-only">Live preview of your resume PDF</DialogDescription>
                 <LivePreview data={data} />
               </DialogContent>
             </Dialog>

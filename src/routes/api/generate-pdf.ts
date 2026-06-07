@@ -73,7 +73,10 @@ export const Route = createFileRoute("/api/generate-pdf")({
           headers: {
             "Content-Type": "application/pdf",
             "Content-Disposition": `attachment; filename="${encodeURIComponent(parsed.resumeData.personal.fullName || "resume")}.pdf"`,
-            "Cache-Control": "no-store",
+            "Cache-Control": "no-store, no-cache, must-revalidate, private",
+            "Pragma": "no-cache",
+            "Expires": "0",
+            "X-Content-Type-Options": "nosniff",
           },
         });
       },

@@ -2,10 +2,10 @@ import { z } from "zod";
 
 export const ResumeSchema = z.object({
   personal: z.object({
-    fullName: z.string().min(1).max(100),
+    fullName: z.string().max(100),
     address: z.string().max(200),
     phone: z.string().max(20),
-    email: z.string().email(),
+    email: z.string().email().or(z.literal("")),
     dob: z.string().max(50),
     languages: z.string().max(150),
     maritalStatus: z.string().max(50),
