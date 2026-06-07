@@ -168,6 +168,20 @@
     box-shadow: var(--shadow-paper);
     border-radius: 4px;
   }
+  .neo-input-3d {
+    border: 2px solid var(--color-border);
+    box-shadow: 3px 3px 0px 0px var(--color-border);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .neo-input-3d:hover {
+    border-color: var(--color-ink);
+    box-shadow: 4px 4px 0px 0px var(--color-ink);
+  }
+  .neo-input-3d:focus, .neo-input-3d:focus-within {
+    border-color: var(--color-saffron);
+    box-shadow: 4px 4px 0px 0px var(--color-saffron);
+    transform: translate(-1.5px, -1.5px);
+  }
 }
 
 @keyframes blob {

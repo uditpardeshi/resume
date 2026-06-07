@@ -17,7 +17,7 @@ const FloatingInput = React.forwardRef<HTMLInputElement, FloatingInputProps>(
           id={inputId}
           placeholder={placeholder || " "}
           className={cn(
-            "peer flex h-9 w-full rounded-md border border-input border-b-[3px] border-r-[1.5px] bg-background px-3 py-1 text-sm shadow-[inset_0_2px_4px_rgba(0,0,0,0.04)] transition-all placeholder:opacity-0 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:border-b-saffron focus-visible:border-b-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+            "peer flex h-9 w-full rounded-md neo-input-3d bg-background px-3 py-1 text-sm placeholder:opacity-0 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
             className,
           )}
           ref={ref}
@@ -51,7 +51,7 @@ const FloatingTextarea = React.forwardRef<HTMLTextAreaElement, FloatingTextareaP
           id={inputId}
           placeholder={placeholder || " "}
           className={cn(
-            "peer flex min-h-[60px] w-full rounded-md border border-input border-b-[3px] border-r-[1.5px] bg-background px-3 py-2 text-sm shadow-[inset_0_2px_4px_rgba(0,0,0,0.04)] transition-all placeholder:opacity-0 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:border-b-saffron focus-visible:border-b-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+            "peer flex min-h-[60px] w-full rounded-md neo-input-3d bg-background px-3 py-2 text-sm placeholder:opacity-0 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
             className,
           )}
           ref={ref}

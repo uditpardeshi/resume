@@ -20,6 +20,9 @@ export default defineConfig({
       "@tanstack/query-core",
     ],
   },
+  server: {
+    host: true,
+  },
   plugins: [
     tsconfigPaths({ projects: ["./tsconfig.json"] }),
     tailwindcss(),

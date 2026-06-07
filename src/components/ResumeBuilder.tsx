@@ -25,15 +25,21 @@ const STEP_COMPONENTS = [
 
 const slideVariants = {
   enter: (dir: number) => ({
-    x: dir > 0 ? 32 : -32,
+    x: dir > 0 ? 60 : -60,
+    rotateY: dir > 0 ? 12 : -12,
+    scale: 0.95,
     opacity: 0,
   }),
   center: {
     x: 0,
+    rotateY: 0,
+    scale: 1,
     opacity: 1,
   },
   exit: (dir: number) => ({
-    x: dir > 0 ? -32 : 32,
+    x: dir > 0 ? -60 : 60,
+    rotateY: dir > 0 ? -12 : 12,
+    scale: 0.95,
     opacity: 0,
   }),
 };
@@ -117,7 +123,7 @@ export function ResumeBuilder() {
 
       <main className="max-w-6xl mx-auto px-3 sm:px-6 py-4 lg:py-6 overflow-hidden flex-1 grid lg:grid-cols-[1fr_minmax(0,420px)] gap-6 sm:gap-8 w-full">
         <section className="h-full flex flex-col min-w-0 overflow-hidden">
-          <div ref={formScrollRef} className="flex-1 overflow-y-auto pr-2 pb-20 lg:pb-4 no-scrollbar">
+          <div ref={formScrollRef} style={{ perspective: 1200 }} className="flex-1 overflow-y-auto pr-2 pb-20 lg:pb-4 no-scrollbar">
             <AnimatePresence mode="wait" initial={false} custom={direction}>
               <motion.div
                 key={step}
@@ -126,7 +132,8 @@ export function ResumeBuilder() {
                 initial="enter"
                 animate="center"
                 exit="exit"
-                transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                style={{ transformStyle: "preserve-3d" }}
               >
                 <StepComp />
               </motion.div>
