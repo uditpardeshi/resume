@@ -51,7 +51,7 @@ export function LivePreview({ data }: { data: ResumeData }) {
       } finally {
         if (active) setLoading(false);
       }
-    }, 800); // 800ms debounce to avoid spamming requests
+    }, 300); // 300ms debounce for near-instant response
 
     return () => {
       active = false;
@@ -80,13 +80,9 @@ export function LivePreview({ data }: { data: ResumeData }) {
 
       <div className="relative w-full h-full bg-paper z-10">
         {loading && (
-          <div className="absolute inset-0 bg-paper/70 backdrop-blur-[1px] z-20 flex items-center justify-center">
-            <div className="flex flex-col items-center gap-2">
-              <span className="w-5 h-5 rounded-full border-2 border-saffron border-t-transparent animate-spin" />
-              <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">
-                Updating Preview…
-              </span>
-            </div>
+          <div className="absolute top-3 right-3 z-30 bg-paper/90 backdrop-blur-sm border border-border rounded-full px-2.5 py-1 flex items-center gap-1.5 shadow-sm text-[9px] uppercase tracking-wider text-muted-foreground font-bold animate-fade-in">
+            <span className="w-2.5 h-2.5 rounded-full border-2 border-saffron border-t-transparent animate-spin" />
+            Syncing
           </div>
         )}
         
