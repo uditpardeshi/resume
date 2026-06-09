@@ -3,20 +3,11 @@ import { createFileRoute } from "@tanstack/react-router";
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
-      GET: async ({ request }: { request: Request }) => {
-        let origin = "";
-        try {
-          const url = new URL(request.url);
-          origin = url.origin;
-          if (origin.includes("localhost") || origin.includes("127.0.0.1") || origin.includes("::1")) {
-            origin = "https://resumzy.vercel.app";
-          }
-        } catch {
-          origin = "https://resumzy.vercel.app";
-        }
+      GET: async () => {
+        const origin = "https://resumzy.vercel.app";
 
         const entries = [
-          { path: "", changefreq: "weekly", priority: "1.0" },
+          { path: "/", changefreq: "weekly", priority: "1.0" },
           { path: "/builder", changefreq: "weekly", priority: "0.9" },
           { path: "/developer", changefreq: "monthly", priority: "0.7" },
           { path: "/privacy", changefreq: "yearly", priority: "0.3" },
@@ -31,7 +22,7 @@ export const Route = createFileRoute("/sitemap.xml")({
         const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.join("\n")}\n</urlset>`;
         return new Response(xml, {
           headers: {
-            "Content-Type": "application/xml",
+            "Content-Type": "text/xml; charset=utf-8",
             "Cache-Control": "public, max-age=3600",
           },
         });
