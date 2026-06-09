@@ -1,10 +1,4 @@
-import {
-  Document,
-  Page,
-  Text,
-  View,
-  StyleSheet,
-} from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import type { ResumeData, TemplateId } from "../resume-schema";
 import { cleanText } from "../sanitize";
 
@@ -12,7 +6,14 @@ interface TemplateConfig {
   fontFamily: string;
   primaryColor: string;
   accentColor: string;
-  headerStyle: "classic" | "modern" | "minimal" | "graphic" | "split" | "elegant-compact" | "left-accent";
+  headerStyle:
+    | "classic"
+    | "modern"
+    | "minimal"
+    | "graphic"
+    | "split"
+    | "elegant-compact"
+    | "left-accent";
   personalLayout: "list" | "grid" | "inline-bullets" | "shaded-box" | "two-col-plain";
   tableStyle: "standard" | "minimal" | "striped" | "grid-dot" | "bold-header";
   sectionHeadingStyle: "bottom-line" | "left-bar" | "double-line" | "block" | "dotted-bottom";
@@ -212,14 +213,26 @@ const TEMPLATE_CONFIGS: Record<TemplateId, TemplateConfig> = {
 
 function parseListItems(text: string): string[] {
   if (!text) return [];
-  const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  const lines = text
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(Boolean);
   if (lines.length > 1) {
     return lines;
   }
-  return text.split(/[,;]+/).map(item => item.trim()).filter(Boolean);
+  return text
+    .split(/[,;]+/)
+    .map((item) => item.trim())
+    .filter(Boolean);
 }
 
-export function ClassicResume({ data, template = "classic" }: { data: ResumeData; template?: TemplateId }) {
+export function ClassicResume({
+  data,
+  template = "classic",
+}: {
+  data: ResumeData;
+  template?: TemplateId;
+}) {
   const p = data.personal;
   const config = TEMPLATE_CONFIGS[template] || TEMPLATE_CONFIGS.classic;
 
@@ -407,7 +420,7 @@ export function ClassicResume({ data, template = "classic" }: { data: ResumeData
       fontFamily: boldFont,
       color: config.primaryColor,
     },
-    
+
     // Section styles
     sectionContainer: {
       marginBottom: sectionMargin,
@@ -510,7 +523,7 @@ export function ClassicResume({ data, template = "classic" }: { data: ResumeData
       marginTop: 8,
       marginBottom: 5,
       paddingBottom: 2,
-      textTransform: config.sectionUppercase === false ? "none" : "uppercase" as any,
+      textTransform: config.sectionUppercase === false ? "none" : ("uppercase" as any),
     };
     if (config.sectionHeadingStyle === "left-bar") {
       return {
@@ -565,11 +578,21 @@ export function ClassicResume({ data, template = "classic" }: { data: ResumeData
     };
   };
 
-  const getSectionName = (key: "education" | "experience" | "skills" | "achievements" | "strengths" | "certifications" | "declaration" | "personal", defaultName: string) => {
-    return sectionNames[key] || defaultName;
+  const getSectionName = (key: string, defaultName: string) => {
+    return (sectionNames as any)[key] || defaultName;
   };
 
-  const isShown = (key: "summary" | "education" | "experience" | "skills" | "achievements" | "strengths" | "certifications" | "declaration") => {
+  const isShown = (
+    key:
+      | "summary"
+      | "education"
+      | "experience"
+      | "skills"
+      | "achievements"
+      | "strengths"
+      | "certifications"
+      | "declaration",
+  ) => {
     return showSections[key] !== false;
   };
 
@@ -585,7 +608,10 @@ export function ClassicResume({ data, template = "classic" }: { data: ResumeData
       return (
         <View style={{ marginLeft: 5, marginTop: 2 }}>
           {items.map((item, idx) => (
-            <View key={idx} style={{ flexDirection: "row", marginBottom: rowGap, alignItems: "flex-start" }}>
+            <View
+              key={idx}
+              style={{ flexDirection: "row", marginBottom: rowGap, alignItems: "flex-start" }}
+            >
               <Text style={{ fontSize: textBlockFontSize, marginRight: 6 }}>•</Text>
               <Text style={{ fontSize: textBlockFontSize, flex: 1 }}>{cleanText(item)}</Text>
             </View>
@@ -599,8 +625,24 @@ export function ClassicResume({ data, template = "classic" }: { data: ResumeData
       return (
         <View style={{ flexDirection: "row", flexWrap: "wrap", marginLeft: 5, marginTop: 2 }}>
           {items.map((item, idx) => (
-            <View key={idx} style={{ flexDirection: "row", width: colWidth, marginBottom: rowGap + 1, alignItems: "center" }}>
-              <Text style={{ fontSize: textBlockFontSize - 1, marginRight: 5, color: config.primaryColor }}>•</Text>
+            <View
+              key={idx}
+              style={{
+                flexDirection: "row",
+                width: colWidth,
+                marginBottom: rowGap + 1,
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: textBlockFontSize - 1,
+                  marginRight: 5,
+                  color: config.primaryColor,
+                }}
+              >
+                •
+              </Text>
               <Text style={{ fontSize: textBlockFontSize }}>{cleanText(item)}</Text>
             </View>
           ))}
@@ -612,8 +654,13 @@ export function ClassicResume({ data, template = "classic" }: { data: ResumeData
       return (
         <View style={{ marginLeft: 5, marginTop: 2 }}>
           {items.map((item, idx) => (
-            <View key={idx} style={{ flexDirection: "row", marginBottom: rowGap, alignItems: "flex-start" }}>
-              <Text style={{ fontSize: textBlockFontSize, fontFamily: boldFont, marginRight: 5 }}>{idx + 1}.</Text>
+            <View
+              key={idx}
+              style={{ flexDirection: "row", marginBottom: rowGap, alignItems: "flex-start" }}
+            >
+              <Text style={{ fontSize: textBlockFontSize, fontFamily: boldFont, marginRight: 5 }}>
+                {idx + 1}.
+              </Text>
               <Text style={{ fontSize: textBlockFontSize, flex: 1 }}>{cleanText(item)}</Text>
             </View>
           ))}
@@ -634,7 +681,7 @@ export function ClassicResume({ data, template = "classic" }: { data: ResumeData
     }
     return {
       borderWidth: 0.5,
-      borderStyle: config.tableStyle === "grid-dot" ? "dashed" as any : "solid" as any,
+      borderStyle: config.tableStyle === "grid-dot" ? ("dashed" as any) : ("solid" as any),
       borderColor: config.borderColor,
     };
   };
@@ -679,49 +726,72 @@ export function ClassicResume({ data, template = "classic" }: { data: ResumeData
   };
 
   return (
-    <Document
-      title={`${cleanText(p.fullName)} - Resume`}
-      author={cleanText(p.fullName)}
-    >
+    <Document title={`${cleanText(p.fullName)} - Resume`} author={cleanText(p.fullName)}>
       <Page size="A4" style={styles.page}>
         {/* Title Header Renders based on headerStyle */}
         {config.headerStyle === "graphic" ? (
           <View style={styles.graphicHeaderBlock}>
-            <Text style={styles.graphicTitle}>{cleanText(p.fullName) || "Resume / Curriculum Vitae"}</Text>
+            <Text style={styles.graphicTitle}>
+              {cleanText(p.fullName) || "Resume / Curriculum Vitae"}
+            </Text>
             <View style={styles.graphicGrid}>
               <View style={styles.graphicCol}>
-                <Text><Text style={styles.graphicLabel}>Address: </Text><Text style={styles.graphicValue}>{cleanText(p.address) || "-"}</Text></Text>
+                <Text>
+                  <Text style={styles.graphicLabel}>Address: </Text>
+                  <Text style={styles.graphicValue}>{cleanText(p.address) || "-"}</Text>
+                </Text>
               </View>
               <View style={styles.graphicCol}>
-                <Text><Text style={styles.graphicLabel}>Mobile: </Text><Text style={styles.graphicValue}>{cleanText(p.phone) || "-"}</Text></Text>
+                <Text>
+                  <Text style={styles.graphicLabel}>Mobile: </Text>
+                  <Text style={styles.graphicValue}>{cleanText(p.phone) || "-"}</Text>
+                </Text>
               </View>
               <View style={styles.graphicCol}>
-                <Text><Text style={styles.graphicLabel}>Email ID: </Text><Text style={styles.graphicValue}>{cleanText(p.email) || "-"}</Text></Text>
+                <Text>
+                  <Text style={styles.graphicLabel}>Email ID: </Text>
+                  <Text style={styles.graphicValue}>{cleanText(p.email) || "-"}</Text>
+                </Text>
               </View>
               <View style={styles.graphicCol}>
-                <Text><Text style={styles.graphicLabel}>Date of Birth: </Text><Text style={styles.graphicValue}>{cleanText(p.dob) || "-"}</Text></Text>
+                <Text>
+                  <Text style={styles.graphicLabel}>Date of Birth: </Text>
+                  <Text style={styles.graphicValue}>{cleanText(p.dob) || "-"}</Text>
+                </Text>
               </View>
               <View style={styles.graphicCol}>
-                <Text><Text style={styles.graphicLabel}>Languages: </Text><Text style={styles.graphicValue}>{cleanText(p.languages) || "-"}</Text></Text>
+                <Text>
+                  <Text style={styles.graphicLabel}>Languages: </Text>
+                  <Text style={styles.graphicValue}>{cleanText(p.languages) || "-"}</Text>
+                </Text>
               </View>
-              <View style={styles.graphicCol}>
-                <Text><Text style={styles.graphicLabel}>Marital Status: </Text><Text style={styles.graphicValue}>{cleanText(p.maritalStatus) || "-"}</Text></Text>
-              </View>
+
             </View>
           </View>
         ) : config.headerStyle === "split" ? (
           <View style={styles.splitHeader}>
             <View style={styles.splitLeft}>
-              <Text style={{ fontSize: 18, fontFamily: boldFont, color: config.primaryColor, textTransform: "uppercase" }}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontFamily: boldFont,
+                  color: config.primaryColor,
+                  textTransform: "uppercase",
+                }}
+              >
                 {cleanText(p.fullName) || "Resume / Curriculum Vitae"}
               </Text>
-              <Text style={{ fontSize: 9, marginTop: 6, color: "#555555", fontFamily: italicFont }}>Curriculum Vitae</Text>
+              <Text style={{ fontSize: 9, marginTop: 6, color: "#555555", fontFamily: italicFont }}>
+                Curriculum Vitae
+              </Text>
             </View>
             <View style={styles.splitRight}>
               <Text style={{ fontFamily: boldFont }}>{cleanText(p.address)}</Text>
               <Text>Phone: {cleanText(p.phone)}</Text>
               <Text>Email: {cleanText(p.email)}</Text>
-              <Text>DOB: {cleanText(p.dob)} | Status: {cleanText(p.maritalStatus)}</Text>
+              <Text>
+                DOB: {cleanText(p.dob)}
+              </Text>
               <Text>Languages: {cleanText(p.languages)}</Text>
             </View>
           </View>
@@ -729,30 +799,54 @@ export function ClassicResume({ data, template = "classic" }: { data: ResumeData
           <View style={styles.leftAccentHeader}>
             <View style={styles.leftAccentBar} />
             <View style={styles.leftAccentContent}>
-              <Text style={styles.leftAccentTitle}>{cleanText(p.fullName) || "Resume / Curriculum Vitae"}</Text>
-              <Text style={{ fontSize: 9, color: config.accentColor, fontFamily: boldFont, textTransform: "uppercase", marginTop: 6 }}>
+              <Text style={styles.leftAccentTitle}>
+                {cleanText(p.fullName) || "Resume / Curriculum Vitae"}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 9,
+                  color: config.accentColor,
+                  fontFamily: boldFont,
+                  textTransform: "uppercase",
+                  marginTop: 6,
+                }}
+              >
                 Curriculum Vitae
               </Text>
             </View>
           </View>
         ) : config.headerStyle === "elegant-compact" ? (
           <View style={styles.elegantHeader}>
-            <Text style={styles.elegantTitle}>{cleanText(p.fullName) || "Resume / Curriculum Vitae"}</Text>
+            <Text style={styles.elegantTitle}>
+              {cleanText(p.fullName) || "Resume / Curriculum Vitae"}
+            </Text>
             <Text style={{ fontSize: 8.5, fontFamily: italicFont, color: "#555555", marginTop: 6 }}>
               Curriculum Vitae
             </Text>
           </View>
         ) : config.headerStyle === "modern" ? (
           <View style={styles.modernHeader}>
-            <Text style={styles.modernTitle}>{cleanText(p.fullName) || "Resume / Curriculum Vitae"}</Text>
+            <Text style={styles.modernTitle}>
+              {cleanText(p.fullName) || "Resume / Curriculum Vitae"}
+            </Text>
             <Text style={styles.modernSubtitle}>Curriculum Vitae</Text>
           </View>
         ) : config.headerStyle === "minimal" ? (
           <View style={{ marginBottom: 12, alignItems: "center" }}>
-            <Text style={{ fontSize: 16, fontFamily: boldFont, color: config.primaryColor, letterSpacing: 1.5, textTransform: "uppercase" }}>
+            <Text
+              style={{
+                fontSize: 16,
+                fontFamily: boldFont,
+                color: config.primaryColor,
+                letterSpacing: 1.5,
+                textTransform: "uppercase",
+              }}
+            >
               {cleanText(p.fullName) || "Resume / Curriculum Vitae"}
             </Text>
-            <View style={{ width: 40, height: 1.5, backgroundColor: config.primaryColor, marginTop: 5 }} />
+            <View
+              style={{ width: 40, height: 1.5, backgroundColor: config.primaryColor, marginTop: 5 }}
+            />
           </View>
         ) : (
           <Text style={styles.classicTitle}>Resume / Curriculum Vitae</Text>
@@ -761,8 +855,10 @@ export function ClassicResume({ data, template = "classic" }: { data: ResumeData
         {/* 1. Personal Details (Skip if graphic or split header style since details are already printed there) */}
         {config.headerStyle !== "graphic" && config.headerStyle !== "split" && (
           <View wrap={false} style={styles.sectionContainer}>
-            <Text style={getSectionHeadingStyle()}>{getSectionName("personal", "1. Personal Details:-")}</Text>
-            
+            <Text style={getSectionHeadingStyle()}>
+              {getSectionName("personal", "1. Personal Details:-")}
+            </Text>
+
             {config.personalLayout === "list" && (
               <View style={styles.personalGrid}>
                 <View style={styles.personalRow}>
@@ -789,41 +885,105 @@ export function ClassicResume({ data, template = "classic" }: { data: ResumeData
                   <Text style={styles.personalLabel}>6) Language Known:</Text>
                   <Text style={styles.personalValue}>{cleanText(p.languages) || "-"}</Text>
                 </View>
-                <View style={styles.personalRow}>
-                  <Text style={styles.personalLabel}>7) Marital Status:</Text>
-                  <Text style={styles.personalValue}>{cleanText(p.maritalStatus) || "-"}</Text>
-                </View>
+
               </View>
             )}
 
             {config.personalLayout === "grid" && (
-              <View style={[styles.personalGrid, { flexDirection: "row", flexWrap: "wrap", marginLeft: 5 }]}>
-                <View style={{ width: "50%", marginBottom: 4 }}><Text><Text style={{ fontFamily: boldFont }}>Name: </Text><Text>{cleanText(p.fullName) || "-"}</Text></Text></View>
-                <View style={{ width: "50%", marginBottom: 4 }}><Text><Text style={{ fontFamily: boldFont }}>Phone: </Text><Text>{cleanText(p.phone) || "-"}</Text></Text></View>
-                <View style={{ width: "50%", marginBottom: 4 }}><Text><Text style={{ fontFamily: boldFont }}>Email: </Text><Text>{cleanText(p.email) || "-"}</Text></Text></View>
-                <View style={{ width: "50%", marginBottom: 4 }}><Text><Text style={{ fontFamily: boldFont }}>DOB: </Text><Text>{cleanText(p.dob) || "-"}</Text></Text></View>
-                <View style={{ width: "50%", marginBottom: 4 }}><Text><Text style={{ fontFamily: boldFont }}>Languages: </Text><Text>{cleanText(p.languages) || "-"}</Text></Text></View>
-                <View style={{ width: "50%", marginBottom: 4 }}><Text><Text style={{ fontFamily: boldFont }}>Status: </Text><Text>{cleanText(p.maritalStatus) || "-"}</Text></Text></View>
-                <View style={{ width: "100%", marginBottom: 4 }}><Text><Text style={{ fontFamily: boldFont }}>Address: </Text><Text>{cleanText(p.address) || "-"}</Text></Text></View>
+              <View
+                style={[
+                  styles.personalGrid,
+                  { flexDirection: "row", flexWrap: "wrap", marginLeft: 5 },
+                ]}
+              >
+                <View style={{ width: "50%", marginBottom: 4 }}>
+                  <Text>
+                    <Text style={{ fontFamily: boldFont }}>Name: </Text>
+                    <Text>{cleanText(p.fullName) || "-"}</Text>
+                  </Text>
+                </View>
+                <View style={{ width: "50%", marginBottom: 4 }}>
+                  <Text>
+                    <Text style={{ fontFamily: boldFont }}>Phone: </Text>
+                    <Text>{cleanText(p.phone) || "-"}</Text>
+                  </Text>
+                </View>
+                <View style={{ width: "50%", marginBottom: 4 }}>
+                  <Text>
+                    <Text style={{ fontFamily: boldFont }}>Email: </Text>
+                    <Text>{cleanText(p.email) || "-"}</Text>
+                  </Text>
+                </View>
+                <View style={{ width: "50%", marginBottom: 4 }}>
+                  <Text>
+                    <Text style={{ fontFamily: boldFont }}>DOB: </Text>
+                    <Text>{cleanText(p.dob) || "-"}</Text>
+                  </Text>
+                </View>
+                <View style={{ width: "50%", marginBottom: 4 }}>
+                  <Text>
+                    <Text style={{ fontFamily: boldFont }}>Languages: </Text>
+                    <Text>{cleanText(p.languages) || "-"}</Text>
+                  </Text>
+                </View>
+
+                <View style={{ width: "100%", marginBottom: 4 }}>
+                  <Text>
+                    <Text style={{ fontFamily: boldFont }}>Address: </Text>
+                    <Text>{cleanText(p.address) || "-"}</Text>
+                  </Text>
+                </View>
               </View>
             )}
 
             {config.personalLayout === "inline-bullets" && (
               <Text style={styles.inlineBulletsText}>
-                {cleanText(p.address) || "-"}  •  Mobile: {cleanText(p.phone) || "-"}  •  Email: {cleanText(p.email) || "-"}  •  DOB: {cleanText(p.dob) || "-"}  •  Languages: {cleanText(p.languages) || "-"}  •  Status: {cleanText(p.maritalStatus) || "-"}
+                {cleanText(p.address) || "-"} • Mobile: {cleanText(p.phone) || "-"} • Email:{" "}
+                {cleanText(p.email) || "-"} • DOB: {cleanText(p.dob) || "-"} • Languages:{" "}
+                {cleanText(p.languages) || "-"}
               </Text>
             )}
 
             {config.personalLayout === "shaded-box" && (
               <View style={styles.shadedBox}>
                 <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-                  <View style={{ width: "50%", marginBottom: 4 }}><Text><Text style={{ fontFamily: boldFont }}>Name: </Text><Text>{cleanText(p.fullName) || "-"}</Text></Text></View>
-                  <View style={{ width: "50%", marginBottom: 4 }}><Text><Text style={{ fontFamily: boldFont }}>Phone: </Text><Text>{cleanText(p.phone) || "-"}</Text></Text></View>
-                  <View style={{ width: "50%", marginBottom: 4 }}><Text><Text style={{ fontFamily: boldFont }}>Email: </Text><Text>{cleanText(p.email) || "-"}</Text></Text></View>
-                  <View style={{ width: "50%", marginBottom: 4 }}><Text><Text style={{ fontFamily: boldFont }}>DOB: </Text><Text>{cleanText(p.dob) || "-"}</Text></Text></View>
-                  <View style={{ width: "50%", marginBottom: 4 }}><Text><Text style={{ fontFamily: boldFont }}>Languages: </Text><Text>{cleanText(p.languages) || "-"}</Text></Text></View>
-                  <View style={{ width: "50%", marginBottom: 4 }}><Text><Text style={{ fontFamily: boldFont }}>Status: </Text><Text>{cleanText(p.maritalStatus) || "-"}</Text></Text></View>
-                  <View style={{ width: "100%", marginTop: 2 }}><Text><Text style={{ fontFamily: boldFont }}>Address: </Text><Text>{cleanText(p.address) || "-"}</Text></Text></View>
+                  <View style={{ width: "50%", marginBottom: 4 }}>
+                    <Text>
+                      <Text style={{ fontFamily: boldFont }}>Name: </Text>
+                      <Text>{cleanText(p.fullName) || "-"}</Text>
+                    </Text>
+                  </View>
+                  <View style={{ width: "50%", marginBottom: 4 }}>
+                    <Text>
+                      <Text style={{ fontFamily: boldFont }}>Phone: </Text>
+                      <Text>{cleanText(p.phone) || "-"}</Text>
+                    </Text>
+                  </View>
+                  <View style={{ width: "50%", marginBottom: 4 }}>
+                    <Text>
+                      <Text style={{ fontFamily: boldFont }}>Email: </Text>
+                      <Text>{cleanText(p.email) || "-"}</Text>
+                    </Text>
+                  </View>
+                  <View style={{ width: "50%", marginBottom: 4 }}>
+                    <Text>
+                      <Text style={{ fontFamily: boldFont }}>DOB: </Text>
+                      <Text>{cleanText(p.dob) || "-"}</Text>
+                    </Text>
+                  </View>
+                  <View style={{ width: "50%", marginBottom: 4 }}>
+                    <Text>
+                      <Text style={{ fontFamily: boldFont }}>Languages: </Text>
+                      <Text>{cleanText(p.languages) || "-"}</Text>
+                    </Text>
+                  </View>
+
+                  <View style={{ width: "100%", marginTop: 2 }}>
+                    <Text>
+                      <Text style={{ fontFamily: boldFont }}>Address: </Text>
+                      <Text>{cleanText(p.address) || "-"}</Text>
+                    </Text>
+                  </View>
                 </View>
               </View>
             )}
@@ -831,15 +991,33 @@ export function ClassicResume({ data, template = "classic" }: { data: ResumeData
             {config.personalLayout === "two-col-plain" && (
               <View style={{ flexDirection: "row", marginLeft: 5 }}>
                 <View style={{ flex: 1, gap: 3 }}>
-                  <Text><Text style={{ fontFamily: boldFont }}>Name: </Text>{cleanText(p.fullName)}</Text>
-                  <Text><Text style={{ fontFamily: boldFont }}>Address: </Text>{cleanText(p.address)}</Text>
-                  <Text><Text style={{ fontFamily: boldFont }}>Mobile: </Text>{cleanText(p.phone)}</Text>
+                  <Text>
+                    <Text style={{ fontFamily: boldFont }}>Name: </Text>
+                    {cleanText(p.fullName)}
+                  </Text>
+                  <Text>
+                    <Text style={{ fontFamily: boldFont }}>Address: </Text>
+                    {cleanText(p.address)}
+                  </Text>
+                  <Text>
+                    <Text style={{ fontFamily: boldFont }}>Mobile: </Text>
+                    {cleanText(p.phone)}
+                  </Text>
                 </View>
                 <View style={{ flex: 1, gap: 3 }}>
-                  <Text><Text style={{ fontFamily: boldFont }}>Email: </Text>{cleanText(p.email)}</Text>
-                  <Text><Text style={{ fontFamily: boldFont }}>Date of Birth: </Text>{cleanText(p.dob)}</Text>
-                  <Text><Text style={{ fontFamily: boldFont }}>Languages Known: </Text>{cleanText(p.languages)}</Text>
-                  <Text><Text style={{ fontFamily: boldFont }}>Marital Status: </Text>{cleanText(p.maritalStatus)}</Text>
+                  <Text>
+                    <Text style={{ fontFamily: boldFont }}>Email: </Text>
+                    {cleanText(p.email)}
+                  </Text>
+                  <Text>
+                    <Text style={{ fontFamily: boldFont }}>Date of Birth: </Text>
+                    {cleanText(p.dob)}
+                  </Text>
+                  <Text>
+                    <Text style={{ fontFamily: boldFont }}>Languages Known: </Text>
+                    {cleanText(p.languages)}
+                  </Text>
+
                 </View>
               </View>
             )}
@@ -849,7 +1027,9 @@ export function ClassicResume({ data, template = "classic" }: { data: ResumeData
         {/* 2. Professional Summary */}
         {isShown("summary") && data.summary ? (
           <View wrap={false} style={styles.sectionContainer}>
-            <Text style={getSectionHeadingStyle()}>{getSectionName("summary", "Professional Summary:-")}</Text>
+            <Text style={getSectionHeadingStyle()}>
+              {getSectionName("summary", "Professional Summary:-")}
+            </Text>
             {renderFormattedList(data.summary, formats.summary || "paragraph")}
           </View>
         ) : null}
@@ -857,34 +1037,73 @@ export function ClassicResume({ data, template = "classic" }: { data: ResumeData
         {/* 3) Educational Details */}
         {isShown("education") && (
           <View wrap={false} style={styles.sectionContainer}>
-            <Text style={getSectionHeadingStyle()}>{getSectionName("education", "2) Educational Details :-")}</Text>
+            <Text style={getSectionHeadingStyle()}>
+              {getSectionName("education", "2) Educational Details :-")}
+            </Text>
             <View style={[styles.table, getTableStyle()]}>
               {/* Table Header */}
               <View style={getRowStyle(0, true)}>
-                <View style={[styles.colDegree, getCellBorderStyle(false)]}><Text style={getHeaderCellTextStyle()}>Degree / Course</Text></View>
-                <View style={[styles.colInstitution, getCellBorderStyle(false)]}><Text style={getHeaderCellTextStyle()}>Institution</Text></View>
-                <View style={[styles.colBoard, getCellBorderStyle(false)]}><Text style={getHeaderCellTextStyle()}>Board / Univ</Text></View>
-                <View style={[styles.colYear, getCellBorderStyle(false)]}><Text style={getHeaderCellTextStyle()}>Year</Text></View>
-                <View style={[styles.colGrade, getCellBorderStyle(true)]}><Text style={getHeaderCellTextStyle()}>Grade</Text></View>
+                <View style={[styles.colDegree, getCellBorderStyle(false)]}>
+                  <Text style={getHeaderCellTextStyle()}>Degree / Course</Text>
+                </View>
+                <View style={[styles.colInstitution, getCellBorderStyle(false)]}>
+                  <Text style={getHeaderCellTextStyle()}>Institution</Text>
+                </View>
+                <View style={[styles.colBoard, getCellBorderStyle(false)]}>
+                  <Text style={getHeaderCellTextStyle()}>Board / Univ</Text>
+                </View>
+                <View style={[styles.colYear, getCellBorderStyle(false)]}>
+                  <Text style={getHeaderCellTextStyle()}>Year</Text>
+                </View>
+                <View style={[styles.colGrade, getCellBorderStyle(true)]}>
+                  <Text style={getHeaderCellTextStyle()}>Grade</Text>
+                </View>
               </View>
               {/* Table Body */}
               {data.education.length > 0 ? (
                 data.education.map((ed, i) => (
-                  <View key={i} style={[getRowStyle(i, false), { borderTopWidth: 0.5, borderColor: config.borderColor }]}>
-                    <View style={[styles.colDegree, getCellBorderStyle(false)]}><Text style={styles.tableCell}>{cleanText(ed.degree) || "-"}</Text></View>
-                    <View style={[styles.colInstitution, getCellBorderStyle(false)]}><Text style={styles.tableCell}>{cleanText(ed.institution) || "-"}</Text></View>
-                    <View style={[styles.colBoard, getCellBorderStyle(false)]}><Text style={styles.tableCell}>{cleanText(ed.board) || "-"}</Text></View>
+                  <View
+                    key={i}
+                    style={[
+                      getRowStyle(i, false),
+                      { borderTopWidth: 0.5, borderColor: config.borderColor },
+                    ]}
+                  >
+                    <View style={[styles.colDegree, getCellBorderStyle(false)]}>
+                      <Text style={styles.tableCell}>{cleanText(ed.degree) || "-"}</Text>
+                    </View>
+                    <View style={[styles.colInstitution, getCellBorderStyle(false)]}>
+                      <Text style={styles.tableCell}>{cleanText(ed.institution) || "-"}</Text>
+                    </View>
+                    <View style={[styles.colBoard, getCellBorderStyle(false)]}>
+                      <Text style={styles.tableCell}>{cleanText(ed.board) || "-"}</Text>
+                    </View>
                     <View style={[styles.colYear, getCellBorderStyle(false)]}>
                       <Text style={[styles.tableCell, { textAlign: "center" }]}>
-                        {ed.fromYear && ed.toYear ? `${cleanText(ed.fromYear)} - ${cleanText(ed.toYear)}` : cleanText(ed.fromYear) || cleanText(ed.toYear) || "-"}
+                        {ed.fromYear && ed.toYear
+                          ? `${cleanText(ed.fromYear)} - ${cleanText(ed.toYear)}`
+                          : cleanText(ed.fromYear) || cleanText(ed.toYear) || "-"}
                       </Text>
                     </View>
-                    <View style={[styles.colGrade, getCellBorderStyle(true)]}><Text style={[styles.tableCell, { textAlign: "center" }]}>{cleanText(ed.grade) || "-"}</Text></View>
+                    <View style={[styles.colGrade, getCellBorderStyle(true)]}>
+                      <Text style={[styles.tableCell, { textAlign: "center" }]}>
+                        {cleanText(ed.grade) || "-"}
+                      </Text>
+                    </View>
                   </View>
                 ))
               ) : (
-                <View style={[getRowStyle(0, false), { borderTopWidth: 0.5, borderColor: config.borderColor }]}>
-                  <View style={{ flex: 1, padding: 6 }}><Text style={[styles.tableCell, { textAlign: "center", fontStyle: "italic" }]}>No education records added yet.</Text></View>
+                <View
+                  style={[
+                    getRowStyle(0, false),
+                    { borderTopWidth: 0.5, borderColor: config.borderColor },
+                  ]}
+                >
+                  <View style={{ flex: 1, padding: 6 }}>
+                    <Text style={[styles.tableCell, { textAlign: "center", fontStyle: "italic" }]}>
+                      No education records added yet.
+                    </Text>
+                  </View>
                 </View>
               )}
             </View>
@@ -894,32 +1113,65 @@ export function ClassicResume({ data, template = "classic" }: { data: ResumeData
         {/* 4) Experience Details */}
         {isShown("experience") && (
           <View wrap={false} style={styles.sectionContainer}>
-            <Text style={getSectionHeadingStyle()}>{getSectionName("experience", "3) Experience Details:-")}</Text>
+            <Text style={getSectionHeadingStyle()}>
+              {getSectionName("experience", "3) Experience Details:-")}
+            </Text>
             <View style={[styles.table, getTableStyle()]}>
               {/* Table Header */}
               <View style={getRowStyle(0, true)}>
-                <View style={[styles.colOrg, getCellBorderStyle(false)]}><Text style={getHeaderCellTextStyle()}>Organisation</Text></View>
-                <View style={[styles.colRole, getCellBorderStyle(false)]}><Text style={getHeaderCellTextStyle()}>Designation</Text></View>
-                <View style={[styles.colDuration, getCellBorderStyle(false)]}><Text style={getHeaderCellTextStyle()}>Duration</Text></View>
-                <View style={[styles.colResp, getCellBorderStyle(true)]}><Text style={getHeaderCellTextStyle()}>Responsibilities</Text></View>
+                <View style={[styles.colOrg, getCellBorderStyle(false)]}>
+                  <Text style={getHeaderCellTextStyle()}>Organisation</Text>
+                </View>
+                <View style={[styles.colRole, getCellBorderStyle(false)]}>
+                  <Text style={getHeaderCellTextStyle()}>Designation</Text>
+                </View>
+                <View style={[styles.colDuration, getCellBorderStyle(false)]}>
+                  <Text style={getHeaderCellTextStyle()}>Duration</Text>
+                </View>
+                <View style={[styles.colResp, getCellBorderStyle(true)]}>
+                  <Text style={getHeaderCellTextStyle()}>Responsibilities</Text>
+                </View>
               </View>
               {/* Table Body */}
               {data.experience.length > 0 ? (
                 data.experience.map((e, i) => (
-                  <View key={i} style={[getRowStyle(i, false), { borderTopWidth: 0.5, borderColor: config.borderColor }]}>
-                    <View style={[styles.colOrg, getCellBorderStyle(false)]}><Text style={styles.tableCell}>{cleanText(e.company) || "-"}</Text></View>
-                    <View style={[styles.colRole, getCellBorderStyle(false)]}><Text style={styles.tableCell}>{cleanText(e.role) || "-"}</Text></View>
+                  <View
+                    key={i}
+                    style={[
+                      getRowStyle(i, false),
+                      { borderTopWidth: 0.5, borderColor: config.borderColor },
+                    ]}
+                  >
+                    <View style={[styles.colOrg, getCellBorderStyle(false)]}>
+                      <Text style={styles.tableCell}>{cleanText(e.company) || "-"}</Text>
+                    </View>
+                    <View style={[styles.colRole, getCellBorderStyle(false)]}>
+                      <Text style={styles.tableCell}>{cleanText(e.role) || "-"}</Text>
+                    </View>
                     <View style={[styles.colDuration, getCellBorderStyle(false)]}>
                       <Text style={[styles.tableCell, { textAlign: "center" }]}>
-                        {e.fromDate && e.toDate ? `${cleanText(e.fromDate)} - ${cleanText(e.toDate)}` : cleanText(e.fromDate) || cleanText(e.toDate) || "-"}
+                        {e.fromDate && e.toDate
+                          ? `${cleanText(e.fromDate)} - ${cleanText(e.toDate)}`
+                          : cleanText(e.fromDate) || cleanText(e.toDate) || "-"}
                       </Text>
                     </View>
-                    <View style={[styles.colResp, getCellBorderStyle(true)]}><Text style={styles.tableCell}>{cleanText(e.responsibilities) || "-"}</Text></View>
+                    <View style={[styles.colResp, getCellBorderStyle(true)]}>
+                      <Text style={styles.tableCell}>{cleanText(e.responsibilities) || "-"}</Text>
+                    </View>
                   </View>
                 ))
               ) : (
-                <View style={[getRowStyle(0, false), { borderTopWidth: 0.5, borderColor: config.borderColor }]}>
-                  <View style={{ flex: 1, padding: 6 }}><Text style={[styles.tableCell, { textAlign: "center", fontStyle: "italic" }]}>No experience records added yet.</Text></View>
+                <View
+                  style={[
+                    getRowStyle(0, false),
+                    { borderTopWidth: 0.5, borderColor: config.borderColor },
+                  ]}
+                >
+                  <View style={{ flex: 1, padding: 6 }}>
+                    <Text style={[styles.tableCell, { textAlign: "center", fontStyle: "italic" }]}>
+                      No experience records added yet.
+                    </Text>
+                  </View>
                 </View>
               )}
             </View>
@@ -929,7 +1181,9 @@ export function ClassicResume({ data, template = "classic" }: { data: ResumeData
         {/* 5. Key Skills */}
         {isShown("skills") && data.skills ? (
           <View wrap={false} style={styles.sectionContainer}>
-            <Text style={getSectionHeadingStyle()}>{getSectionName("skills", "Key Skills & Expertise:-")}</Text>
+            <Text style={getSectionHeadingStyle()}>
+              {getSectionName("skills", "Key Skills & Expertise:-")}
+            </Text>
             {renderFormattedList(data.skills, formats.skills || "grid3")}
           </View>
         ) : null}
@@ -937,7 +1191,9 @@ export function ClassicResume({ data, template = "classic" }: { data: ResumeData
         {/* 6) Special Achievements */}
         {isShown("achievements") && data.achievements ? (
           <View wrap={false} style={styles.sectionContainer}>
-            <Text style={getSectionHeadingStyle()}>{getSectionName("achievements", "4) Special Achievements:-")}</Text>
+            <Text style={getSectionHeadingStyle()}>
+              {getSectionName("achievements", "4) Special Achievements:-")}
+            </Text>
             {renderFormattedList(data.achievements, formats.achievements || "bullets")}
           </View>
         ) : null}
@@ -945,7 +1201,9 @@ export function ClassicResume({ data, template = "classic" }: { data: ResumeData
         {/* 7) Strengths */}
         {isShown("strengths") && data.strengths ? (
           <View wrap={false} style={styles.sectionContainer}>
-            <Text style={getSectionHeadingStyle()}>{getSectionName("strengths", "5) Strengths:")}</Text>
+            <Text style={getSectionHeadingStyle()}>
+              {getSectionName("strengths", "5) Strengths:")}
+            </Text>
             {renderFormattedList(data.strengths, formats.strengths || "bullets")}
           </View>
         ) : null}
@@ -953,7 +1211,9 @@ export function ClassicResume({ data, template = "classic" }: { data: ResumeData
         {/* 8. Certifications */}
         {isShown("certifications") && data.certifications ? (
           <View wrap={false} style={styles.sectionContainer}>
-            <Text style={getSectionHeadingStyle()}>{getSectionName("certifications", "Certifications & Trainings:-")}</Text>
+            <Text style={getSectionHeadingStyle()}>
+              {getSectionName("certifications", "Certifications & Trainings:-")}
+            </Text>
             {renderFormattedList(data.certifications, formats.certifications || "bullets")}
           </View>
         ) : null}
@@ -961,18 +1221,37 @@ export function ClassicResume({ data, template = "classic" }: { data: ResumeData
         {/* Declaration and Signature block */}
         {isShown("declaration") && (
           <View wrap={false} style={[styles.sectionContainer, { marginTop: 15, marginBottom: 0 }]}>
-            <Text style={[getSectionHeadingStyle(), { borderBottomWidth: 0, borderTopWidth: 0, borderLeftWidth: 0, paddingLeft: 0, backgroundColor: "transparent", color: config.primaryColor }]}>{getSectionName("declaration", "Declaration")}</Text>
+            <Text
+              style={[
+                getSectionHeadingStyle(),
+                {
+                  borderBottomWidth: 0,
+                  borderTopWidth: 0,
+                  borderLeftWidth: 0,
+                  paddingLeft: 0,
+                  backgroundColor: "transparent",
+                  color: config.primaryColor,
+                },
+              ]}
+            >
+              {getSectionName("declaration", "Declaration")}
+            </Text>
             <Text style={styles.declarationText}>
-              {cleanText(data.declaration?.text) || "I hereby declare that the above information is true and correct to the best of my knowledge."}
+              {cleanText(data.declaration?.text) ||
+                "I hereby declare that the above information is true and correct to the best of my knowledge."}
             </Text>
 
             <View style={styles.signatureBlock}>
               <View style={styles.sigLeft}>
-                <Text style={{ marginBottom: 2 }}>Place: {cleanText(data.declaration?.place) || ""}</Text>
+                <Text style={{ marginBottom: 2 }}>
+                  Place: {cleanText(data.declaration?.place) || ""}
+                </Text>
                 <Text>Date: {cleanText(data.declaration?.date) || ""}</Text>
               </View>
               <View style={styles.sigRight}>
-                <Text style={{ fontStyle: "italic", fontSize: 8, opacity: 0.7, marginBottom: 8 }}>signature</Text>
+                <Text style={{ fontStyle: "italic", fontSize: 8, opacity: 0.7, marginBottom: 8 }}>
+                  signature
+                </Text>
                 <Text style={{ fontFamily: boldFont }}>{cleanText(p.fullName) || ""}</Text>
               </View>
             </View>

@@ -31,9 +31,7 @@ export function Step3Experience() {
   const update = (i: number, patch: Partial<(typeof data.experience)[0]>) =>
     setData((d) => ({
       ...d,
-      experience: d.experience.map((e, j) =>
-        j === i ? { ...e, ...patch } : e,
-      ),
+      experience: d.experience.map((e, j) => (j === i ? { ...e, ...patch } : e)),
     }));
 
   return (

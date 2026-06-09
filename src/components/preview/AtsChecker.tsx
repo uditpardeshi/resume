@@ -5,130 +5,284 @@ interface AuditRule {
   status: "pass" | "warn" | "fail";
   message: string;
   points: number;
+  maxPoints: number;
 }
 
 export function AtsChecker({ data, template }: { data: ResumeData; template: TemplateId }) {
   const p = data.personal;
-
   const rules: AuditRule[] = [];
 
-  // 1. Personal Details Checks (Max 25 pts)
-  let personalScore = 0;
-  if (p.fullName && p.fullName.trim().length > 2) {
-    personalScore += 5;
-    rules.push({ name: "Contact Name", status: "pass", message: "Full name is specified clearly", points: 5 });
-  } else {
-    rules.push({ name: "Contact Name", status: "fail", message: "Full name is missing or too short", points: 0 });
-  }
+  // Helper: word counter
+  const getWordCount = (str?: string) => {
+    if (!str) return 0;
+    return str.trim().split(/\s+/).filter(Boolean).length;
+  };
 
-  if (p.email && p.email.includes("@")) {
-    personalScore += 5;
-    rules.push({ name: "Email Address", status: "pass", message: "Valid contact email provided", points: 5 });
-  } else {
-    rules.push({ name: "Email Address", status: "fail", message: "Valid email ID is missing", points: 0 });
-  }
+  // Helper: check for numbers/metrics
+  const hasMetrics = (str?: string) => {
+    if (!str) return false;
+    // Check for digits, percentage sign, dollar sign, currency words, etc.
+    return /[\d%]+/.test(str) || /\b(million|thousand|percent|USD|INR)\b/i.test(str);
+  };
 
-  if (p.phone && p.phone.trim().length >= 8) {
-    personalScore += 5;
-    rules.push({ name: "Mobile Number", status: "pass", message: "Mobile number is specified", points: 5 });
-  } else {
-    rules.push({ name: "Mobile Number", status: "fail", message: "Mobile number is missing", points: 0 });
-  }
+  // List of standard ATS action verbs
+  const ACTION_VERBS = [
+    "directed", "executed", "headed", "managed", "spearheaded", "engineered",
+    "developed", "designed", "built", "created", "led", "supervised", "implemented",
+    "improved", "optimized", "increased", "decreased", "generated", "saved",
+    "achieved", "streamlined", "formulated", "redesigned", "pioneered", "negotiated",
+    "coordinated", "automated", "facilitated", "launched", "boosted", "accelerated",
+    "delivered", "analyzed", "forecasted", "resolved", "maintained", "mentored"
+  ];
 
-  if (p.address && p.address.trim().length > 10) {
-    personalScore += 5;
-    rules.push({ name: "Full Address", status: "pass", message: "Address details are present", points: 5 });
-  } else {
-    rules.push({ name: "Full Address", status: "warn", message: "Address is too short or missing", points: 0 });
-  }
+  const hasActionVerbs = (str?: string) => {
+    if (!str) return false;
+    const words = str.toLowerCase().split(/[^\w]+/).filter(Boolean);
+    return words.some(w => ACTION_VERBS.includes(w));
+  };
 
-  if (p.dob && p.languages && p.maritalStatus) {
-    personalScore += 5;
-    rules.push({ name: "Demographics", status: "pass", message: "DOB, Languages, and Marital Status present", points: 5 });
-  } else {
-    rules.push({ name: "Demographics", status: "warn", message: "Provide DOB, Languages, or Marital Status", points: 2 });
-    personalScore += 2;
-  }
+  // 1. Contact Info & Essential Details (Max 15 pts)
+  let contactScore = 0;
+  const missingContact: string[] = [];
+  if (p.fullName && p.fullName.trim().length > 2) contactScore += 5;
+  else missingContact.push("Full Name");
 
-  // 2. Education Check (Max 20 pts)
-  let educationScore = 0;
+  if (p.email && p.email.includes("@")) contactScore += 5;
+  else missingContact.push("Valid Email");
+
+  if (p.phone && p.phone.trim().length >= 8) contactScore += 5;
+  else missingContact.push("Phone Number");
+
+  rules.push({
+    name: "Contact Information",
+    status: contactScore === 15 ? "pass" : contactScore >= 10 ? "warn" : "fail",
+    message: contactScore === 15 
+      ? "All primary contact fields are present." 
+      : `Missing critical info: ${missingContact.join(", ")}`,
+    points: contactScore,
+    maxPoints: 15,
+  });
+
+  // 2. Education Completeness (Max 15 pts)
+  let eduScore = 0;
   if (data.education && data.education.length > 0) {
-    const firstEd = data.education[0];
-    const isComplete = firstEd.degree && firstEd.institution && firstEd.board && firstEd.passingYear && firstEd.grade;
-    if (isComplete) {
-      educationScore = 20;
-      rules.push({ name: "Education Details", status: "pass", message: "Education details are complete", points: 20 });
+    const incomplete = data.education.some(
+      e => !e.degree || !e.institution || !e.fromYear || !e.toYear
+    );
+    if (!incomplete) {
+      eduScore = 15;
+      rules.push({
+        name: "Education Structuring",
+        status: "pass",
+        message: "Academic degrees are correctly structured with institutions and dates.",
+        points: 15,
+        maxPoints: 15,
+      });
     } else {
-      educationScore = 12;
-      rules.push({ name: "Education Details", status: "warn", message: "Fill all columns in Education row", points: 12 });
+      eduScore = 10;
+      rules.push({
+        name: "Education Structuring",
+        status: "warn",
+        message: "Some education records are missing a degree, school, or dates.",
+        points: 10,
+        maxPoints: 15,
+      });
     }
   } else {
-    rules.push({ name: "Education Details", status: "fail", message: "Add at least one educational record", points: 0 });
+    rules.push({
+      name: "Education Structuring",
+      status: "fail",
+      message: "No educational background detected. Add at least one record.",
+      points: 0,
+      maxPoints: 15,
+    });
   }
 
-  // 3. Experience Check (Max 25 pts)
-  let experienceScore = 0;
+  // 3. Work Experience & Impact Check (Max 25 pts)
+  let expScore = 0;
   if (data.experience && data.experience.length > 0) {
-    const firstExp = data.experience[0];
-    const isComplete = firstExp.company && firstExp.role && firstExp.duration && firstExp.responsibilities;
-    if (isComplete) {
-      experienceScore = 25;
-      rules.push({ name: "Experience Details", status: "pass", message: "Professional experience details complete", points: 25 });
+    let hasMetricsFound = false;
+    let hasActionVerbsFound = false;
+
+    data.experience.forEach(exp => {
+      if (hasMetrics(exp.responsibilities)) hasMetricsFound = true;
+      if (hasActionVerbs(exp.responsibilities)) hasActionVerbsFound = true;
+    });
+
+    if (hasMetricsFound && hasActionVerbsFound) {
+      expScore = 25;
+      rules.push({
+        name: "Impact & Action Language",
+        status: "pass",
+        message: "Descriptions leverage action verbs and list quantified results (numbers/percentages).",
+        points: 25,
+        maxPoints: 25,
+      });
+    } else if (hasActionVerbsFound) {
+      expScore = 18;
+      rules.push({
+        name: "Impact & Action Language",
+        status: "warn",
+        message: "Action verbs are present, but consider adding quantified metrics (%, $, savings) to prove impact.",
+        points: 18,
+        maxPoints: 25,
+      });
     } else {
-      experienceScore = 15;
-      rules.push({ name: "Experience Details", status: "warn", message: "Fill all columns in Experience row", points: 15 });
+      expScore = 10;
+      rules.push({
+        name: "Impact & Action Language",
+        status: "warn",
+        message: "Use stronger action verbs (e.g., Developed, Streamlined) instead of passive job description duties.",
+        points: 10,
+        maxPoints: 25,
+      });
     }
   } else {
-    // If no experience is added, it might be a fresher resume. Don't fail them, give partial points if they listed achievements
-    if (data.achievements) {
-      experienceScore = 18;
-      rules.push({ name: "Experience Details", status: "pass", message: "Fresher profile with active achievements", points: 18 });
+    // If fresher but has achievements/certifications, give partial experience/credibility score
+    const hasExtras = !!(data.achievements || data.certifications || data.strengths);
+    expScore = hasExtras ? 12 : 0;
+    rules.push({
+      name: "Impact & Action Language",
+      status: hasExtras ? "warn" : "fail",
+      message: hasExtras 
+        ? "No work history listed; leveraging achievements to build fresh graduate credibility." 
+        : "Work experience or project logs are missing.",
+      points: expScore,
+      maxPoints: 25,
+    });
+  }
+
+  // 4. Skills Density & Core Keywords (Max 15 pts)
+  let skillsScore = 0;
+  if (data.skills && data.skills.trim().length > 0) {
+    const list = data.skills.split(/[,\n•·|]+/).map(s => s.trim()).filter(s => s.length > 1);
+    if (list.length >= 8) {
+      skillsScore = 15;
+      rules.push({
+        name: "Keyword & Skills Optimization",
+        status: "pass",
+        message: `Healthy skill profile detected with ${list.length} distinct search keywords.`,
+        points: 15,
+        maxPoints: 15,
+      });
+    } else if (list.length >= 4) {
+      skillsScore = 10;
+      rules.push({
+        name: "Keyword & Skills Optimization",
+        status: "warn",
+        message: `Only ${list.length} skills found. Add more standard industry keywords (aim for 8+).`,
+        points: 10,
+        maxPoints: 15,
+      });
     } else {
-      rules.push({ name: "Experience Details", status: "warn", message: "Consider adding experience or achievements", points: 0 });
+      skillsScore = 5;
+      rules.push({
+        name: "Keyword & Skills Optimization",
+        status: "warn",
+        message: "Skills section is too brief. Expand with relevant tools, tech, or soft competencies.",
+        points: 5,
+        maxPoints: 15,
+      });
     }
-  }
-
-  // 4. Extras & Strengths (Max 15 pts)
-  let extrasScore = 0;
-  if (data.strengths) {
-    extrasScore += 8;
-  }
-  if (data.achievements) {
-    extrasScore += 7;
-  }
-  if (extrasScore > 0) {
-    rules.push({ name: "Strengths & Achievements", status: "pass", message: "Achievements or strengths listed", points: extrasScore });
   } else {
-    rules.push({ name: "Strengths & Achievements", status: "warn", message: "Add strengths or achievements to rank higher", points: 0 });
+    rules.push({
+      name: "Keyword & Skills Optimization",
+      status: "fail",
+      message: "No skills section detected. ATS parsers score resumes heavily on keywords.",
+      points: 0,
+      maxPoints: 15,
+    });
   }
 
-  // 5. Template & Parsability Check (Max 15 pts)
-  let templateScore = 15;
-  let templateStatus: "pass" | "warn" = "pass";
-  let templateMessage = "Strictly ATS-optimized text & layouts";
+  // 5. Text Volume & Word Density (Max 15 pts)
+  let volumeScore = 0;
+  // Calculate total words in the resume
+  let totalWords = 0;
+  totalWords += getWordCount(p.fullName) + getWordCount(p.address);
+  totalWords += getWordCount(data.summary);
+  totalWords += getWordCount(data.skills);
+  totalWords += getWordCount(data.achievements);
+  totalWords += getWordCount(data.strengths);
+  totalWords += getWordCount(data.certifications);
+  data.education.forEach(e => {
+    totalWords += getWordCount(e.degree) + getWordCount(e.institution) + getWordCount(e.board);
+  });
+  data.experience.forEach(e => {
+    totalWords += getWordCount(e.company) + getWordCount(e.role) + getWordCount(e.responsibilities);
+  });
+
+  if (totalWords >= 350 && totalWords <= 750) {
+    volumeScore = 15;
+    rules.push({
+      name: "Content Length & Density",
+      status: "pass",
+      message: `Ideal word count (${totalWords} words). Fits standard 1-page constraints.`,
+      points: 15,
+      maxPoints: 15,
+    });
+  } else if (totalWords > 0 && (totalWords < 200 || totalWords > 1100)) {
+    volumeScore = 5;
+    rules.push({
+      name: "Content Length & Density",
+      status: "fail",
+      message: totalWords < 200 
+        ? `Too short (${totalWords} words). Expand detail on experience/projects.` 
+        : `Too verbose (${totalWords} words). Condense text to stay readable.`,
+      points: 5,
+      maxPoints: 15,
+    });
+  } else {
+    volumeScore = 10;
+    rules.push({
+      name: "Content Length & Density",
+      status: "warn",
+      message: `Acceptable length (${totalWords} words), but try targeting 350-700 words for optimal density.`,
+      points: 10,
+      maxPoints: 15,
+    });
+  }
+
+  // 6. Template Parsability & Layout Check (Max 15 pts)
+  let layoutScore = 15;
+  let layoutStatus: "pass" | "warn" | "fail" = "pass";
+  let layoutMessage = "Standard clean, single-column table structures. 100% parsable.";
 
   if (template === "graphic") {
-    templateScore = 11;
-    templateStatus = "warn";
-    templateMessage = "Dark background blocks can sometimes challenge older parsers";
-  } else if (template === "modern" || template === "emerald" || template === "royal" || template === "orange") {
-    templateScore = 14;
-    templateStatus = "pass";
-    templateMessage = "High parsability (colored accents are generally supported)";
+    layoutScore = 8;
+    layoutStatus = "fail";
+    layoutMessage = "Dense dark background shapes and block headers confuse optical character recognitions.";
+  } else if (
+    template === "modern" ||
+    template === "emerald" ||
+    template === "royal" ||
+    template === "orange"
+  ) {
+    // These layouts have colored accents/minor decorative details but are structured cleanly
+    layoutScore = 13;
+    layoutStatus = "warn";
+    layoutMessage = "Uses light styling accents. Highly readable, but plain classic layout is slightly safer.";
   }
 
-  rules.push({ name: "Template Layout", status: templateStatus, message: templateMessage, points: templateScore });
+  rules.push({
+    name: "Layout Compatibility",
+    status: layoutStatus,
+    message: layoutMessage,
+    points: layoutScore,
+    maxPoints: 15,
+  });
 
-  // Calculate total score
-  const totalScore = personalScore + educationScore + experienceScore + extrasScore + templateScore;
-  const scorePercent = Math.min(100, Math.max(0, totalScore));
+  // Calculate final score out of 100
+  const finalScore = contactScore + eduScore + expScore + skillsScore + volumeScore + layoutScore;
+  const scorePercent = Math.min(100, Math.max(0, finalScore));
 
   return (
     <div className="paper-card p-5 mt-6 border border-border bg-card shadow-soft space-y-4">
       <div className="flex items-center justify-between border-b pb-3 border-border">
         <div>
           <h3 className="font-semibold text-base text-ink">ATS Scanner Audit</h3>
-          <p className="text-xs text-muted-foreground mt-0.5">Real-time parsability diagnostic score</p>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            Real-time corporate recruiter parsing compatibility
+          </p>
         </div>
         <div className="flex items-center gap-3">
           <div className="relative flex items-center justify-center">
@@ -146,7 +300,13 @@ export function AtsChecker({ data, template }: { data: ResumeData; template: Tem
                 cx="24"
                 cy="24"
                 r="20"
-                stroke={scorePercent >= 85 ? "oklch(0.72 0.18 140)" : scorePercent >= 60 ? "oklch(0.72 0.18 55)" : "oklch(0.63 0.19 25)"}
+                stroke={
+                  scorePercent >= 80
+                    ? "oklch(0.72 0.18 140)"
+                    : scorePercent >= 55
+                      ? "oklch(0.72 0.18 55)"
+                      : "oklch(0.63 0.19 25)"
+                }
                 strokeWidth="3.5"
                 fill="transparent"
                 strokeDasharray="125.6"
@@ -154,14 +314,12 @@ export function AtsChecker({ data, template }: { data: ResumeData; template: Tem
                 className="transition-all duration-500 ease-out"
               />
             </svg>
-            <span className="absolute text-xs font-bold font-mono">
-              {scorePercent}%
-            </span>
+            <span className="absolute text-xs font-bold font-mono">{scorePercent}%</span>
           </div>
         </div>
       </div>
 
-      <div className="space-y-2.5">
+      <div className="space-y-3">
         {rules.map((r, i) => (
           <div key={i} className="flex items-start justify-between gap-3 text-xs">
             <div className="flex gap-2 min-w-0">
@@ -175,32 +333,37 @@ export function AtsChecker({ data, template }: { data: ResumeData; template: Tem
                 )}
               </span>
               <div className="min-w-0">
-                <div className="font-semibold text-ink leading-tight">{r.name}</div>
-                <div className="text-[11px] text-muted-foreground leading-normal mt-0.5">{r.message}</div>
+                <div className="font-semibold text-ink leading-tight flex items-center gap-1.5">
+                  {r.name}
+                  <span className="text-[10px] text-muted-foreground font-normal">
+                    ({r.points}/{r.maxPoints})
+                  </span>
+                </div>
+                <div className="text-[11px] text-muted-foreground leading-normal mt-0.5">
+                  {r.message}
+                </div>
               </div>
-            </div>
-            <div className="text-[10px] font-mono text-muted-foreground shrink-0 font-semibold bg-secondary px-1.5 py-0.5 rounded">
-              +{r.points} pts
             </div>
           </div>
         ))}
       </div>
 
       <div className="pt-2 border-t border-border">
-        {scorePercent >= 85 ? (
-          <div className="bg-emerald-50 text-emerald-800 border border-emerald-200/50 rounded p-2.5 text-[11px] font-medium leading-normal">
-            ✓ <strong>Excellent ATS Score!</strong> Your resume is highly structured and uses optimized single-column layout tables that parse perfectly.
+        {scorePercent >= 80 ? (
+          <div className="bg-emerald-50 text-emerald-800 dark:bg-emerald-950/20 dark:text-emerald-300 border border-emerald-200/50 dark:border-emerald-900/30 rounded p-2.5 text-[11px] font-medium leading-normal">
+            ✓ <strong>Recruiter Ready:</strong> Your resume has strong keyword volume, layout parsability, and metrics-oriented sentences. High likelihood of passing automated enterprise screening.
           </div>
-        ) : scorePercent >= 60 ? (
-          <div className="bg-amber-50 text-amber-800 border border-amber-200/50 rounded p-2.5 text-[11px] font-medium leading-normal">
-            ⚠️ <strong>Ready, but can improve:</strong> Consider filling in more education fields or providing complete descriptions to reach 90%+.
+        ) : scorePercent >= 55 ? (
+          <div className="bg-amber-50 text-amber-800 dark:bg-amber-950/20 dark:text-amber-300 border border-amber-200/50 dark:border-amber-900/30 rounded p-2.5 text-[11px] font-medium leading-normal">
+            ⚠️ <strong>Optimization Needed:</strong> Try adding standard action verbs, listing exact numbers/quantifiable results, and expanding your skills section to improve visibility.
           </div>
         ) : (
-          <div className="bg-red-50 text-red-800 border border-red-200/50 rounded p-2.5 text-[11px] font-medium leading-normal">
-            ✕ <strong>Audit Warnings:</strong> Please fill out your contact details and add your education row to enable search parsing.
+          <div className="bg-red-50 text-red-800 dark:bg-red-950/20 dark:text-red-300 border border-red-200/50 dark:border-red-900/30 rounded p-2.5 text-[11px] font-medium leading-normal">
+            ✕ <strong>High Risk of Rejection:</strong> Missing critical sections, too short, or lacks standard keyword formatting. Recruiter parsers will likely fail to index this profile correctly.
           </div>
         )}
       </div>
     </div>
   );
 }
+

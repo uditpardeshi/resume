@@ -11,9 +11,7 @@ export function generateRawToken(): string {
 export async function sha256Hex(input: string): Promise<string> {
   const data = new TextEncoder().encode(input);
   const digest = await crypto.subtle.digest("SHA-256", data);
-  return Array.from(new Uint8Array(digest), (b) =>
-    b.toString(16).padStart(2, "0"),
-  ).join("");
+  return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 /** Constant-time hex compare (avoid early-exit timing leaks). */
@@ -26,10 +24,7 @@ export function timingSafeEqualHex(a: string, b: string): boolean {
   return result === 0;
 }
 
-export async function hmacSha256Hex(
-  secret: string,
-  message: string,
-): Promise<string> {
+export async function hmacSha256Hex(secret: string, message: string): Promise<string> {
   const key = await crypto.subtle.importKey(
     "raw",
     new TextEncoder().encode(secret),
@@ -37,12 +32,6 @@ export async function hmacSha256Hex(
     false,
     ["sign"],
   );
-  const sig = await crypto.subtle.sign(
-    "HMAC",
-    key,
-    new TextEncoder().encode(message),
-  );
-  return Array.from(new Uint8Array(sig), (b) =>
-    b.toString(16).padStart(2, "0"),
-  ).join("");
+  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(message));
+  return Array.from(new Uint8Array(sig), (b) => b.toString(16).padStart(2, "0")).join("");
 }

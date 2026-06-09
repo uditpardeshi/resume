@@ -1,10 +1,4 @@
-import {
-  Document,
-  Page,
-  Text,
-  View,
-  StyleSheet,
-} from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import type { ResumeData } from "../resume-schema";
 import { cleanText } from "../sanitize";
 
@@ -140,33 +134,43 @@ export function GraphicResume({ data }: { data: ResumeData }) {
   const p = data.personal;
 
   return (
-    <Document
-      title={`${cleanText(p.fullName)} - Resume`}
-      author={cleanText(p.fullName)}
-    >
+    <Document title={`${cleanText(p.fullName)} - Resume`} author={cleanText(p.fullName)}>
       <Page size="A4" style={styles.page}>
         {/* Bold Dark Header Block */}
         <View style={styles.headerBlock}>
           <Text style={styles.title}>{cleanText(p.fullName) || "Resume / Curriculum Vitae"}</Text>
           <View style={styles.headerGrid}>
             <View style={styles.headerCol}>
-              <Text><Text style={styles.headerLabel}>Address: </Text><Text style={styles.headerValue}>{cleanText(p.address) || "-"}</Text></Text>
+              <Text>
+                <Text style={styles.headerLabel}>Address: </Text>
+                <Text style={styles.headerValue}>{cleanText(p.address) || "-"}</Text>
+              </Text>
             </View>
             <View style={styles.headerCol}>
-              <Text><Text style={styles.headerLabel}>Mobile: </Text><Text style={styles.headerValue}>{cleanText(p.phone) || "-"}</Text></Text>
+              <Text>
+                <Text style={styles.headerLabel}>Mobile: </Text>
+                <Text style={styles.headerValue}>{cleanText(p.phone) || "-"}</Text>
+              </Text>
             </View>
             <View style={styles.headerCol}>
-              <Text><Text style={styles.headerLabel}>Email ID: </Text><Text style={styles.headerValue}>{cleanText(p.email) || "-"}</Text></Text>
+              <Text>
+                <Text style={styles.headerLabel}>Email ID: </Text>
+                <Text style={styles.headerValue}>{cleanText(p.email) || "-"}</Text>
+              </Text>
             </View>
             <View style={styles.headerCol}>
-              <Text><Text style={styles.headerLabel}>Date of Birth: </Text><Text style={styles.headerValue}>{cleanText(p.dob) || "-"}</Text></Text>
+              <Text>
+                <Text style={styles.headerLabel}>Date of Birth: </Text>
+                <Text style={styles.headerValue}>{cleanText(p.dob) || "-"}</Text>
+              </Text>
             </View>
             <View style={styles.headerCol}>
-              <Text><Text style={styles.headerLabel}>Languages: </Text><Text style={styles.headerValue}>{cleanText(p.languages) || "-"}</Text></Text>
+              <Text>
+                <Text style={styles.headerLabel}>Languages: </Text>
+                <Text style={styles.headerValue}>{cleanText(p.languages) || "-"}</Text>
+              </Text>
             </View>
-            <View style={styles.headerCol}>
-              <Text><Text style={styles.headerLabel}>Marital Status: </Text><Text style={styles.headerValue}>{cleanText(p.maritalStatus) || "-"}</Text></Text>
-            </View>
+
           </View>
         </View>
 
@@ -176,26 +180,53 @@ export function GraphicResume({ data }: { data: ResumeData }) {
           <View style={styles.table}>
             {/* Table Header */}
             <View style={[styles.tableRow, styles.tableHeader]}>
-              <View style={styles.colDegree}><Text style={styles.tableCellHeader}>Degree / Course</Text></View>
-              <View style={styles.colInstitution}><Text style={styles.tableCellHeader}>Institution</Text></View>
-              <View style={styles.colBoard}><Text style={styles.tableCellHeader}>Board / Univ</Text></View>
-              <View style={styles.colYear}><Text style={styles.tableCellHeader}>Year</Text></View>
-              <View style={styles.colGrade}><Text style={styles.tableCellHeader}>Grade</Text></View>
+              <View style={styles.colDegree}>
+                <Text style={styles.tableCellHeader}>Degree / Course</Text>
+              </View>
+              <View style={styles.colInstitution}>
+                <Text style={styles.tableCellHeader}>Institution</Text>
+              </View>
+              <View style={styles.colBoard}>
+                <Text style={styles.tableCellHeader}>Board / Univ</Text>
+              </View>
+              <View style={styles.colYear}>
+                <Text style={styles.tableCellHeader}>Year</Text>
+              </View>
+              <View style={styles.colGrade}>
+                <Text style={styles.tableCellHeader}>Grade</Text>
+              </View>
             </View>
             {/* Table Body */}
             {data.education.length > 0 ? (
               data.education.map((ed, i) => (
-                <View key={i} style={[styles.tableRow, { borderTopWidth: 0.5, borderColor: "#475569" }]}>
-                  <View style={styles.colDegree}><Text style={styles.tableCell}>{cleanText(ed.degree) || "-"}</Text></View>
-                  <View style={styles.colInstitution}><Text style={styles.tableCell}>{cleanText(ed.institution) || "-"}</Text></View>
-                  <View style={styles.colBoard}><Text style={styles.tableCell}>{cleanText(ed.board) || "-"}</Text></View>
-                  <View style={styles.colYear}><Text style={styles.tableCell}>{cleanText(ed.passingYear) || "-"}</Text></View>
-                  <View style={styles.colGrade}><Text style={styles.tableCell}>{cleanText(ed.grade) || "-"}</Text></View>
+                <View
+                  key={i}
+                  style={[styles.tableRow, { borderTopWidth: 0.5, borderColor: "#475569" }]}
+                >
+                  <View style={styles.colDegree}>
+                    <Text style={styles.tableCell}>{cleanText(ed.degree) || "-"}</Text>
+                  </View>
+                  <View style={styles.colInstitution}>
+                    <Text style={styles.tableCell}>{cleanText(ed.institution) || "-"}</Text>
+                  </View>
+                  <View style={styles.colBoard}>
+                    <Text style={styles.tableCell}>{cleanText(ed.board) || "-"}</Text>
+                  </View>
+                  <View style={styles.colYear}>
+                    <Text style={styles.tableCell}>{cleanText(ed.toYear) || "-"}</Text>
+                  </View>
+                  <View style={styles.colGrade}>
+                    <Text style={styles.tableCell}>{cleanText(ed.grade) || "-"}</Text>
+                  </View>
                 </View>
               ))
             ) : (
               <View style={[styles.tableRow, { borderTopWidth: 0.5, borderColor: "#475569" }]}>
-                <View style={{ flex: 1, padding: 6 }}><Text style={[styles.tableCell, { textAlign: "center", fontStyle: "italic" }]}>No education records added yet.</Text></View>
+                <View style={{ flex: 1, padding: 6 }}>
+                  <Text style={[styles.tableCell, { textAlign: "center", fontStyle: "italic" }]}>
+                    No education records added yet.
+                  </Text>
+                </View>
               </View>
             )}
           </View>
@@ -207,24 +238,51 @@ export function GraphicResume({ data }: { data: ResumeData }) {
           <View style={styles.table}>
             {/* Table Header */}
             <View style={[styles.tableRow, styles.tableHeader]}>
-              <View style={styles.colOrg}><Text style={styles.tableCellHeader}>Organisation</Text></View>
-              <View style={styles.colRole}><Text style={styles.tableCellHeader}>Designation</Text></View>
-              <View style={styles.colDuration}><Text style={styles.tableCellHeader}>Duration</Text></View>
-              <View style={styles.colResp}><Text style={styles.tableCellHeader}>Responsibilities</Text></View>
+              <View style={styles.colOrg}>
+                <Text style={styles.tableCellHeader}>Organisation</Text>
+              </View>
+              <View style={styles.colRole}>
+                <Text style={styles.tableCellHeader}>Designation</Text>
+              </View>
+              <View style={styles.colDuration}>
+                <Text style={styles.tableCellHeader}>Duration</Text>
+              </View>
+              <View style={styles.colResp}>
+                <Text style={styles.tableCellHeader}>Responsibilities</Text>
+              </View>
             </View>
             {/* Table Body */}
             {data.experience.length > 0 ? (
               data.experience.map((e, i) => (
-                <View key={i} style={[styles.tableRow, { borderTopWidth: 0.5, borderColor: "#475569" }]}>
-                  <View style={styles.colOrg}><Text style={styles.tableCell}>{cleanText(e.company) || "-"}</Text></View>
-                  <View style={styles.colRole}><Text style={styles.tableCell}>{cleanText(e.role) || "-"}</Text></View>
-                  <View style={styles.colDuration}><Text style={styles.tableCell}>{cleanText(e.duration) || "-"}</Text></View>
-                  <View style={styles.colResp}><Text style={styles.tableCell}>{cleanText(e.responsibilities) || "-"}</Text></View>
+                <View
+                  key={i}
+                  style={[styles.tableRow, { borderTopWidth: 0.5, borderColor: "#475569" }]}
+                >
+                  <View style={styles.colOrg}>
+                    <Text style={styles.tableCell}>{cleanText(e.company) || "-"}</Text>
+                  </View>
+                  <View style={styles.colRole}>
+                    <Text style={styles.tableCell}>{cleanText(e.role) || "-"}</Text>
+                  </View>
+                  <View style={styles.colDuration}>
+                    <Text style={styles.tableCell}>
+                      {e.fromDate && e.toDate
+                        ? `${cleanText(e.fromDate)} - ${cleanText(e.toDate)}`
+                        : "-"}
+                    </Text>
+                  </View>
+                  <View style={styles.colResp}>
+                    <Text style={styles.tableCell}>{cleanText(e.responsibilities) || "-"}</Text>
+                  </View>
                 </View>
               ))
             ) : (
               <View style={[styles.tableRow, { borderTopWidth: 0.5, borderColor: "#475569" }]}>
-                <View style={{ flex: 1, padding: 6 }}><Text style={[styles.tableCell, { textAlign: "center", fontStyle: "italic" }]}>No experience records added yet.</Text></View>
+                <View style={{ flex: 1, padding: 6 }}>
+                  <Text style={[styles.tableCell, { textAlign: "center", fontStyle: "italic" }]}>
+                    No experience records added yet.
+                  </Text>
+                </View>
               </View>
             )}
           </View>
@@ -246,28 +304,25 @@ export function GraphicResume({ data }: { data: ResumeData }) {
           </View>
         ) : null}
 
-        {/* 6) Weaknesses */}
-        {data.weaknesses ? (
-          <View wrap={false} style={styles.sectionContainer}>
-            <Text style={styles.sectionHeading}>6) Weaknesses:-</Text>
-            <Text style={styles.textBlock}>{cleanText(data.weaknesses)}</Text>
-          </View>
-        ) : null}
-
         {/* Declaration and Signature block */}
         <View wrap={false} style={[styles.sectionContainer, { marginTop: 15, marginBottom: 0 }]}>
           <Text style={[styles.sectionHeading, { borderBottomWidth: 0 }]}>Declaration</Text>
           <Text style={styles.declarationText}>
-            {cleanText(data.declaration?.text) || "I hereby declare that the above information is true and correct to the best of my knowledge."}
+            {cleanText(data.declaration?.text) ||
+              "I hereby declare that the above information is true and correct to the best of my knowledge."}
           </Text>
 
           <View style={styles.signatureBlock}>
             <View style={styles.sigLeft}>
-              <Text style={{ marginBottom: 2 }}>Place: {cleanText(data.declaration?.place) || ""}</Text>
+              <Text style={{ marginBottom: 2 }}>
+                Place: {cleanText(data.declaration?.place) || ""}
+              </Text>
               <Text>Date: {cleanText(data.declaration?.date) || ""}</Text>
             </View>
             <View style={styles.sigRight}>
-              <Text style={{ fontStyle: "italic", fontSize: 8, opacity: 0.7, marginBottom: 8 }}>signature</Text>
+              <Text style={{ fontStyle: "italic", fontSize: 8, opacity: 0.7, marginBottom: 8 }}>
+                signature
+              </Text>
               <Text style={{ fontFamily: "Helvetica-Bold" }}>{cleanText(p.fullName) || ""}</Text>
             </View>
           </View>

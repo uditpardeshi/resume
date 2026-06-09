@@ -5,22 +5,108 @@ import { Check } from "lucide-react";
 import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input";
 import { useEffect } from "react";
 
-const TEMPLATES: { id: TemplateId; name: string; tagline: string; available: boolean; badge?: string; badgeColor?: string }[] = [
-  { id: "classic", name: "Classic", tagline: "Traditional, clean, professional layout", available: true, badge: "100% ATS Score", badgeColor: "bg-emerald-600 text-white" },
-  { id: "modern", name: "Modern Teal", tagline: "Subtle colors, structured accent borders", available: true, badge: "Popular", badgeColor: "bg-blue-600 text-white" },
-  { id: "minimal", name: "Minimal Serif", tagline: "Elegant serif typography, clean spacing", available: true },
-  { id: "graphic", name: "Graphic Header", tagline: "Bold dark header block with clean layout", available: true },
-  { id: "emerald", name: "Emerald Accent", tagline: "Fresh emerald palette, clean border tabs", available: true },
-  { id: "burgundy", name: "Burgundy Classic", tagline: "Deep burgundy layout with serif touch", available: true },
-  { id: "royal", name: "Royal Executive", tagline: "Polished royal blue accents for leaders", available: true },
-  { id: "charcoal", name: "Slate Charcoal", tagline: "Standard corporate gray, high parsability", available: true },
-  { id: "bronze", name: "Bronze Elegant", tagline: "Earth-toned accents, serif body text", available: true },
-  { id: "navy", name: "Navy Corporate", tagline: "Traditional navy color, trustworthy vibe", available: true },
-  { id: "forest", name: "Forest Green", tagline: "Relaxed dark-green headers, legible columns", available: true },
-  { id: "plum", name: "Plum Sophisticated", tagline: "Unique dark purple styling and serif headings", available: true },
-  { id: "orange", name: "Warm Orange", tagline: "Energetic orange headers for creative roles", available: true },
-  { id: "steel", name: "Steel Corporate", tagline: "Professional steel gray color styling", available: true },
-  { id: "classic-serif", name: "Classic Serif", tagline: "Times-Roman layout of the Traditional design", available: true },
+const TEMPLATES: {
+  id: TemplateId;
+  name: string;
+  tagline: string;
+  available: boolean;
+  badge?: string;
+  badgeColor?: string;
+}[] = [
+  {
+    id: "classic",
+    name: "Classic",
+    tagline: "Traditional, clean, professional layout",
+    available: true,
+    badge: "100% ATS Score",
+    badgeColor: "bg-emerald-600 text-white",
+  },
+  {
+    id: "modern",
+    name: "Modern Teal",
+    tagline: "Subtle colors, structured accent borders",
+    available: true,
+    badge: "Popular",
+    badgeColor: "bg-blue-600 text-white",
+  },
+  {
+    id: "minimal",
+    name: "Minimal Serif",
+    tagline: "Elegant serif typography, clean spacing",
+    available: true,
+  },
+  {
+    id: "graphic",
+    name: "Graphic Header",
+    tagline: "Bold dark header block with clean layout",
+    available: true,
+  },
+  {
+    id: "emerald",
+    name: "Emerald Accent",
+    tagline: "Fresh emerald palette, clean border tabs",
+    available: true,
+  },
+  {
+    id: "burgundy",
+    name: "Burgundy Classic",
+    tagline: "Deep burgundy layout with serif touch",
+    available: true,
+  },
+  {
+    id: "royal",
+    name: "Royal Executive",
+    tagline: "Polished royal blue accents for leaders",
+    available: true,
+  },
+  {
+    id: "charcoal",
+    name: "Slate Charcoal",
+    tagline: "Standard corporate gray, high parsability",
+    available: true,
+  },
+  {
+    id: "bronze",
+    name: "Bronze Elegant",
+    tagline: "Earth-toned accents, serif body text",
+    available: true,
+  },
+  {
+    id: "navy",
+    name: "Navy Corporate",
+    tagline: "Traditional navy color, trustworthy vibe",
+    available: true,
+  },
+  {
+    id: "forest",
+    name: "Forest Green",
+    tagline: "Relaxed dark-green headers, legible columns",
+    available: true,
+  },
+  {
+    id: "plum",
+    name: "Plum Sophisticated",
+    tagline: "Unique dark purple styling and serif headings",
+    available: true,
+  },
+  {
+    id: "orange",
+    name: "Warm Orange",
+    tagline: "Energetic orange headers for creative roles",
+    available: true,
+  },
+  {
+    id: "steel",
+    name: "Steel Corporate",
+    tagline: "Professional steel gray color styling",
+    available: true,
+  },
+  {
+    id: "classic-serif",
+    name: "Classic Serif",
+    tagline: "Times-Roman layout of the Traditional design",
+    available: true,
+  },
 ];
 
 export function Step5Template() {
@@ -199,17 +285,16 @@ export function Step5Template() {
                 onClick={() => setTemplate(t.id)}
                 className={cn(
                   "relative text-left paper-card p-4 transition-all hover:-translate-y-[1px] duration-150 cursor-pointer",
-                  selected && "translate-y-[2px] border-b-[2px] border-r-[1px] border-saffron bg-saffron/5 shadow-sm ring-1 ring-saffron/20",
-                  !t.available && "opacity-50 cursor-not-allowed hover:translate-y-0"
+                  selected &&
+                    "translate-y-[2px] border-b-[2px] border-r-[1px] border-saffron bg-saffron/5 shadow-sm ring-1 ring-saffron/20",
+                  !t.available && "opacity-50 cursor-not-allowed hover:translate-y-0",
                 )}
               >
                 <TemplateThumb id={t.id} />
                 <div className="mt-3 flex items-start justify-between">
                   <div>
                     <div className="font-medium">{t.name}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {t.tagline}
-                    </div>
+                    <div className="text-xs text-muted-foreground">{t.tagline}</div>
                   </div>
                   {selected && (
                     <span className="w-5 h-5 rounded-full bg-saffron text-saffron-foreground inline-flex items-center justify-center">
@@ -218,7 +303,12 @@ export function Step5Template() {
                   )}
                 </div>
                 {t.badge && (
-                  <div className={cn("absolute top-2 right-2 text-[8px] sm:text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded font-bold shadow-sm", t.badgeColor)}>
+                  <div
+                    className={cn(
+                      "absolute top-2 right-2 text-[8px] sm:text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded font-bold shadow-sm",
+                      t.badgeColor,
+                    )}
+                  >
                     {t.badge}
                   </div>
                 )}
@@ -292,7 +382,7 @@ export function Step5Template() {
                       "py-2 px-3 text-xs font-medium border rounded-md transition-all capitalize cursor-pointer text-center",
                       active
                         ? "bg-primary border-primary text-primary-foreground shadow-sm font-semibold"
-                        : "bg-paper hover:bg-secondary/50 text-muted-foreground hover:text-foreground border-border"
+                        : "bg-paper hover:bg-secondary/50 text-muted-foreground hover:text-foreground border-border",
                     )}
                   >
                     {mode}
@@ -301,7 +391,8 @@ export function Step5Template() {
               })}
             </div>
             <p className="text-[11px] text-muted-foreground">
-              Adjust spacing to control how elements are distributed and fit within a single A4 page.
+              Adjust spacing to control how elements are distributed and fit within a single A4
+              page.
             </p>
           </div>
 
@@ -319,9 +410,12 @@ export function Step5Template() {
                 { key: "achievements", label: "Special Achievements" },
                 { key: "strengths", label: "Strengths" },
                 { key: "certifications", label: "Certifications" },
-                { key: "declaration", label: "Declaration" }
+                { key: "declaration", label: "Declaration" },
               ].map(({ key, label }) => {
-                const checked = data.customization?.showSections?.[key as keyof typeof data.customization.showSections] !== false;
+                const checked =
+                  data.customization?.showSections?.[
+                    key as keyof typeof data.customization.showSections
+                  ] !== false;
                 return (
                   <label
                     key={key}
@@ -347,20 +441,45 @@ export function Step5Template() {
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3 bg-secondary/5 rounded-lg border border-border/40">
               {[
-                { key: "personal", label: "Personal Details Title", defaultVal: "1. Personal Details:-" },
+                {
+                  key: "personal",
+                  label: "Personal Details Title",
+                  defaultVal: "1. Personal Details:-",
+                },
                 { key: "summary", label: "Summary Title", defaultVal: "Professional Summary:-" },
-                { key: "education", label: "Education Title", defaultVal: "2) Educational Details :-" },
-                { key: "experience", label: "Experience Title", defaultVal: "3) Experience Details:-" },
+                {
+                  key: "education",
+                  label: "Education Title",
+                  defaultVal: "2) Educational Details :-",
+                },
+                {
+                  key: "experience",
+                  label: "Experience Title",
+                  defaultVal: "3) Experience Details:-",
+                },
                 { key: "skills", label: "Skills Title", defaultVal: "Key Skills & Expertise:-" },
-                { key: "achievements", label: "Achievements Title", defaultVal: "4) Special Achievements:-" },
+                {
+                  key: "achievements",
+                  label: "Achievements Title",
+                  defaultVal: "4) Special Achievements:-",
+                },
                 { key: "strengths", label: "Strengths Title", defaultVal: "5) Strengths:" },
-                { key: "certifications", label: "Certifications Title", defaultVal: "Certifications & Trainings:-" },
-                { key: "declaration", label: "Declaration Title", defaultVal: "Declaration" }
+                {
+                  key: "certifications",
+                  label: "Certifications Title",
+                  defaultVal: "Certifications & Trainings:-",
+                },
+                { key: "declaration", label: "Declaration Title", defaultVal: "Declaration" },
               ].map(({ key, label, defaultVal }) => {
-                const currentName = data.customization?.sectionNames?.[key as keyof typeof data.customization.sectionNames] || defaultVal;
+                const currentName =
+                  data.customization?.sectionNames?.[
+                    key as keyof typeof data.customization.sectionNames
+                  ] || defaultVal;
                 return (
                   <div key={key} className="space-y-1">
-                    <span className="text-[10px] font-semibold text-muted-foreground uppercase block">{label}</span>
+                    <span className="text-[10px] font-semibold text-muted-foreground uppercase block">
+                      {label}
+                    </span>
                     <input
                       type="text"
                       value={currentName}
@@ -395,15 +514,36 @@ function TemplateThumb({ id }: { id: TemplateId }) {
       </div>
     );
   }
-  if (id === "modern" || id === "emerald" || id === "royal" || id === "navy" || id === "forest" || id === "orange" || id === "steel") {
+  if (
+    id === "modern" ||
+    id === "emerald" ||
+    id === "royal" ||
+    id === "navy" ||
+    id === "forest" ||
+    id === "orange" ||
+    id === "steel"
+  ) {
     let headerBg = "bg-muted";
     let accentBorder = "border-saffron";
-    if (id === "emerald") { headerBg = "bg-emerald-50"; accentBorder = "border-emerald-600"; }
-    else if (id === "royal") { headerBg = "bg-blue-50"; accentBorder = "border-blue-600"; }
-    else if (id === "navy") { headerBg = "bg-indigo-50"; accentBorder = "border-indigo-900"; }
-    else if (id === "forest") { headerBg = "bg-emerald-50/50"; accentBorder = "border-green-800"; }
-    else if (id === "orange") { headerBg = "bg-orange-50"; accentBorder = "border-orange-600"; }
-    else if (id === "steel") { headerBg = "bg-slate-100"; accentBorder = "border-slate-600"; }
+    if (id === "emerald") {
+      headerBg = "bg-emerald-50";
+      accentBorder = "border-emerald-600";
+    } else if (id === "royal") {
+      headerBg = "bg-blue-50";
+      accentBorder = "border-blue-600";
+    } else if (id === "navy") {
+      headerBg = "bg-indigo-50";
+      accentBorder = "border-indigo-900";
+    } else if (id === "forest") {
+      headerBg = "bg-emerald-50/50";
+      accentBorder = "border-green-800";
+    } else if (id === "orange") {
+      headerBg = "bg-orange-50";
+      accentBorder = "border-orange-600";
+    } else if (id === "steel") {
+      headerBg = "bg-slate-100";
+      accentBorder = "border-slate-600";
+    }
 
     return (
       <div className="aspect-[3/4] bg-paper border rounded-sm overflow-hidden">
@@ -420,7 +560,13 @@ function TemplateThumb({ id }: { id: TemplateId }) {
       </div>
     );
   }
-  if (id === "minimal" || id === "burgundy" || id === "bronze" || id === "plum" || id === "classic-serif") {
+  if (
+    id === "minimal" ||
+    id === "burgundy" ||
+    id === "bronze" ||
+    id === "plum" ||
+    id === "classic-serif"
+  ) {
     let accentLine = "bg-foreground";
     if (id === "burgundy") accentLine = "bg-red-800";
     else if (id === "bronze") accentLine = "bg-amber-800";
@@ -436,7 +582,12 @@ function TemplateThumb({ id }: { id: TemplateId }) {
   }
   return (
     <div className="aspect-[3/4] bg-paper border rounded-sm overflow-hidden flex flex-col">
-      <div className={cn(id === "graphic" ? "bg-slate-800" : "bg-zinc-700", "h-1/3 p-2 flex flex-col justify-end gap-1")}>
+      <div
+        className={cn(
+          id === "graphic" ? "bg-slate-800" : "bg-zinc-700",
+          "h-1/3 p-2 flex flex-col justify-end gap-1",
+        )}
+      >
         <div className="h-2 w-1/2 bg-white rounded-sm" />
         <div className="h-1 w-3/4 bg-slate-400 rounded-sm" />
       </div>

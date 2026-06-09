@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { rateLimit, getClientIP } from "@/lib/rate-limit.server";
 
 // GET /api/geo — detect currency/gateway from request country.
 // Cloudflare adds `cf-ipcountry` automatically; no external geo DB required
@@ -8,16 +7,15 @@ import { rateLimit, getClientIP } from "@/lib/rate-limit.server";
 export const Route = createFileRoute("/api/geo")({
   server: {
     handlers: {
-      GET: async ({ request }) => {
+      GET: async ({ request }: { request: Request }) => {
+        const { rateLimit, getClientIP } = await import("@/lib/rate-limit.server");
         const ip = getClientIP(request);
         const rl = rateLimit(`geo:${ip}`, { max: 30, windowMs: 60_000 });
         if (!rl.ok) {
           return new Response("Too many requests", { status: 429 });
         }
         const country =
-          request.headers.get("cf-ipcountry") ||
-          request.headers.get("x-vercel-ip-country") ||
-          "";
+          request.headers.get("cf-ipcountry") || request.headers.get("x-vercel-ip-country") || "";
         const isIndia = country === "IN";
         return Response.json({
           country: country || "XX",
@@ -29,4 +27,4 @@ export const Route = createFileRoute("/api/geo")({
       },
     },
   },
-});
+} as any);

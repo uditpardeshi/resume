@@ -8,7 +8,6 @@ export const ResumeSchema = z.object({
     email: z.string().email().or(z.literal("")),
     dob: z.string().max(50),
     languages: z.string().max(150),
-    maritalStatus: z.string().max(50),
   }),
   education: z
     .array(
@@ -47,11 +46,21 @@ export const ResumeSchema = z.object({
     .object({
       formats: z
         .object({
-          summary: z.enum(["paragraph", "bullets", "grid3", "grid2", "comma", "numbered"]).optional(),
-          skills: z.enum(["paragraph", "bullets", "grid3", "grid2", "comma", "numbered"]).optional(),
-          achievements: z.enum(["paragraph", "bullets", "grid3", "grid2", "comma", "numbered"]).optional(),
-          strengths: z.enum(["paragraph", "bullets", "grid3", "grid2", "comma", "numbered"]).optional(),
-          certifications: z.enum(["paragraph", "bullets", "grid3", "grid2", "comma", "numbered"]).optional(),
+          summary: z
+            .enum(["paragraph", "bullets", "grid3", "grid2", "comma", "numbered"])
+            .optional(),
+          skills: z
+            .enum(["paragraph", "bullets", "grid3", "grid2", "comma", "numbered"])
+            .optional(),
+          achievements: z
+            .enum(["paragraph", "bullets", "grid3", "grid2", "comma", "numbered"])
+            .optional(),
+          strengths: z
+            .enum(["paragraph", "bullets", "grid3", "grid2", "comma", "numbered"])
+            .optional(),
+          certifications: z
+            .enum(["paragraph", "bullets", "grid3", "grid2", "comma", "numbered"])
+            .optional(),
         })
         .optional(),
       sectionNames: z
@@ -108,7 +117,6 @@ export const emptyResume: ResumeData = {
     email: "",
     dob: "",
     languages: "",
-    maritalStatus: "",
   },
   education: [
     {

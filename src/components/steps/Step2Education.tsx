@@ -32,9 +32,7 @@ export function Step2Education() {
   const update = (i: number, k: string, v: string) =>
     setData((d) => ({
       ...d,
-      education: d.education.map((e, j) =>
-        j === i ? { ...e, [k]: v } : e,
-      ),
+      education: d.education.map((e, j) => (j === i ? { ...e, [k]: v } : e)),
     }));
 
   return (

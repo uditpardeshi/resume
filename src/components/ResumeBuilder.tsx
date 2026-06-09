@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "@tanstack/react-router";
 import { useResumeStore } from "@/store/useResumeStore";
 import { StepIndicator } from "./StepIndicator";
 import { Step1Personal } from "./steps/Step1Personal";
@@ -45,6 +46,7 @@ const slideVariants = {
 };
 
 export function ResumeBuilder() {
+  const navigate = useNavigate();
   const { data, step, setStep, template } = useResumeStore();
   const [paying, setPaying] = useState(false);
   const [direction, setDirection] = useState(1);
@@ -73,9 +75,7 @@ export function ResumeBuilder() {
     const parsed = ResumeSchema.safeParse(data);
     if (!parsed.success) {
       const first = parsed.error.issues[0];
-      toast.error(
-        `${first.path.join(".") || "Resume"}: ${first.message}`,
-      );
+      toast.error(`${first.path.join(".") || "Resume"}: ${first.message}`);
       return;
     }
     setDownloading(true);
@@ -100,9 +100,7 @@ export function ResumeBuilder() {
       URL.revokeObjectURL(url);
       toast.success("Resume downloaded successfully!");
     } catch (e) {
-      toast.error(
-        e instanceof Error ? e.message : "PDF generation failed",
-      );
+      toast.error(e instanceof Error ? e.message : "PDF generation failed");
     } finally {
       setDownloading(false);
     }
@@ -123,7 +121,11 @@ export function ResumeBuilder() {
 
       <main className="max-w-6xl mx-auto px-3 sm:px-6 py-4 lg:py-6 overflow-hidden flex-1 grid lg:grid-cols-[1fr_minmax(0,420px)] gap-6 sm:gap-8 w-full">
         <section className="h-full flex flex-col min-w-0 overflow-hidden">
-          <div ref={formScrollRef} style={{ perspective: 1200 }} className="flex-1 overflow-y-auto pr-2 pb-20 lg:pb-4 no-scrollbar">
+          <div
+            ref={formScrollRef}
+            style={{ perspective: 1200 }}
+            className="flex-1 overflow-y-auto pr-2 pb-20 lg:pb-4 no-scrollbar"
+          >
             <AnimatePresence mode="wait" initial={false} custom={direction}>
               <motion.div
                 key={step}
@@ -142,50 +144,60 @@ export function ResumeBuilder() {
 
           <div className="fixed bottom-0 left-0 right-0 z-20 bg-paper/90 backdrop-blur-md border-t border-border px-4 py-3 lg:static lg:bg-transparent lg:border-t lg:border-border/40 lg:px-0 lg:py-3 lg:mt-2 lg:shrink-0">
             <div className="flex items-center justify-between gap-3 max-w-6xl mx-auto">
-            <Button
-              variant="ghost"
-              onClick={() => setStep(step - 1)}
-              disabled={step === 1}
-              className="text-sm"
-            >
-              <ArrowLeft className="w-4 h-4 mr-1" /> Back
-            </Button>
-
-            {/* Mobile preview button */}
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="outline" size="sm" className="lg:hidden">
-                  <Eye className="w-4 h-4 mr-1.5" /> Preview
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-md sm:max-w-lg p-4" aria-describedby="preview-dialog-desc">
-                <DialogTitle className="sr-only">Resume Preview</DialogTitle>
-                <DialogDescription id="preview-dialog-desc" className="sr-only">Live preview of your resume PDF</DialogDescription>
-                <LivePreview data={data} />
-              </DialogContent>
-            </Dialog>
-
-            {!isLast ? (
-              <Button onClick={() => setStep(step + 1)} className="text-sm">
-                Next <ArrowRight className="w-4 h-4 ml-1" />
-              </Button>
-            ) : (
               <Button
-                onClick={handleDownload}
-                disabled={downloading}
-                variant="saffron"
+                variant="ghost"
+                onClick={() => {
+                  if (step === 1) {
+                    navigate({ to: "/" });
+                  } else {
+                    setStep(step - 1);
+                  }
+                }}
                 className="text-sm"
               >
-                {downloading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Generating…
-                  </>
-                ) : (
-                  <>Download Resume PDF</>
-                )}
+                <ArrowLeft className="w-4 h-4 mr-1" /> Back
               </Button>
-            )}
+
+              {/* Mobile preview button */}
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm" className="lg:hidden">
+                    <Eye className="w-4 h-4 mr-1.5" /> Preview
+                  </Button>
+                </DialogTrigger>
+                <DialogContent
+                  className="max-w-md sm:max-w-lg p-4"
+                  aria-describedby="preview-dialog-desc"
+                >
+                  <DialogTitle className="sr-only">Resume Preview</DialogTitle>
+                  <DialogDescription id="preview-dialog-desc" className="sr-only">
+                    Live preview of your resume PDF
+                  </DialogDescription>
+                  <LivePreview data={data} />
+                </DialogContent>
+              </Dialog>
+
+              {!isLast ? (
+                <Button onClick={() => setStep(step + 1)} className="text-sm">
+                  Next <ArrowRight className="w-4 h-4 ml-1" />
+                </Button>
+              ) : (
+                <Button
+                  onClick={handleDownload}
+                  disabled={downloading}
+                  variant="saffron"
+                  className="text-sm"
+                >
+                  {downloading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Generating…
+                    </>
+                  ) : (
+                    <>Download Resume PDF</>
+                  )}
+                </Button>
+              )}
             </div>
           </div>
         </section>

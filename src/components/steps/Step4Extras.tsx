@@ -5,7 +5,10 @@ import { cn } from "@/lib/utils";
 export function Step4Extras() {
   const { data, setData } = useResumeStore();
 
-  const updateField = (k: "summary" | "skills" | "achievements" | "strengths" | "certifications", v: string) => {
+  const updateField = (
+    k: "summary" | "skills" | "achievements" | "strengths" | "certifications",
+    v: string,
+  ) => {
     setData((d) => ({
       ...d,
       [k]: v,
@@ -19,11 +22,7 @@ export function Step4Extras() {
   }) => {
     const currentVal =
       data.customization?.formats?.[fieldName] ||
-      (fieldName === "summary"
-        ? "paragraph"
-        : fieldName === "skills"
-          ? "grid3"
-          : "bullets");
+      (fieldName === "summary" ? "paragraph" : fieldName === "skills" ? "grid3" : "bullets");
 
     const formatsList = [
       { key: "paragraph", label: "Paragraph" },

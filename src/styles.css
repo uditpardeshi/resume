@@ -138,7 +138,9 @@
 }
 
 @layer base {
-  * { border-color: var(--color-border); }
+  * {
+    border-color: var(--color-border);
+  }
   html {
     font-family: var(--font-sans);
     overflow-x: hidden;
@@ -151,7 +153,12 @@
     overflow-x: hidden;
     -webkit-text-size-adjust: 100%;
   }
-  h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.01em; }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
 }
 
 @layer components {
@@ -177,7 +184,8 @@
     border-color: var(--color-ink);
     box-shadow: 4px 4px 0px 0px var(--color-ink);
   }
-  .neo-input-3d:focus, .neo-input-3d:focus-within {
+  .neo-input-3d:focus,
+  .neo-input-3d:focus-within {
     border-color: var(--color-saffron);
     box-shadow: 4px 4px 0px 0px var(--color-saffron);
     transform: translate(-1.5px, -1.5px);
@@ -214,6 +222,6 @@
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }

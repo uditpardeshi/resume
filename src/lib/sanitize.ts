@@ -11,5 +11,7 @@ export function escapeHtml(s: string): string {
 export function cleanText(s: string | undefined | null): string {
   if (!s) return "";
   // eslint-disable-next-line no-control-regex
-  return String(s).replace(/[\u0000-\u001F\u007F]/g, "").trim();
+  return String(s)
+    .replace(/[\u0000-\u001F\u007F]/g, "")
+    .trim();
 }

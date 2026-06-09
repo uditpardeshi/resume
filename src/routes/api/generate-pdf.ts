@@ -23,7 +23,7 @@ const Body = z.object({
     "plum",
     "orange",
     "steel",
-    "classic-serif"
+    "classic-serif",
   ]),
   resumeData: ResumeSchema,
 });
@@ -31,13 +31,12 @@ const Body = z.object({
 export const Route = createFileRoute("/api/generate-pdf")({
   server: {
     handlers: {
-      POST: async ({ request }) => {
+      POST: async ({ request }: { request: Request }) => {
         let parsed;
         try {
           parsed = Body.parse(await request.json());
         } catch (e) {
-          const message =
-            e instanceof z.ZodError ? "Invalid resume data" : "Invalid body";
+          const message = e instanceof z.ZodError ? "Invalid resume data" : "Invalid body";
           return new Response(JSON.stringify({ error: message }), {
             status: 400,
             headers: { "Content-Type": "application/json" },
@@ -62,10 +61,10 @@ export const Route = createFileRoute("/api/generate-pdf")({
           pdfBuf = buf;
         } catch (e) {
           console.error("[generate-pdf] render failure", e);
-          return new Response(
-            JSON.stringify({ error: "PDF generation failed" }),
-            { status: 500, headers: { "Content-Type": "application/json" } },
-          );
+          return new Response(JSON.stringify({ error: "PDF generation failed" }), {
+            status: 500,
+            headers: { "Content-Type": "application/json" },
+          });
         }
 
         return new Response(pdfBuf as unknown as BodyInit, {
@@ -74,12 +73,12 @@ export const Route = createFileRoute("/api/generate-pdf")({
             "Content-Type": "application/pdf",
             "Content-Disposition": `attachment; filename="${encodeURIComponent(parsed.resumeData.personal.fullName || "resume")}.pdf"`,
             "Cache-Control": "no-store, no-cache, must-revalidate, private",
-            "Pragma": "no-cache",
-            "Expires": "0",
+            Pragma: "no-cache",
+            Expires: "0",
             "X-Content-Type-Options": "nosniff",
           },
         });
       },
     },
   },
-});
+} as any);

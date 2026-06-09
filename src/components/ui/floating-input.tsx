@@ -1,15 +1,15 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-export interface FloatingInputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface FloatingInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
   required?: boolean;
 }
 
 const FloatingInput = React.forwardRef<HTMLInputElement, FloatingInputProps>(
   ({ className, label, required, type, id, placeholder, ...props }, ref) => {
-    const inputId = id || React.useId();
+    const generatedId = React.useId();
+    const inputId = id || generatedId;
     return (
       <div className="relative pt-7 w-full">
         <input
@@ -36,15 +36,15 @@ const FloatingInput = React.forwardRef<HTMLInputElement, FloatingInputProps>(
 );
 FloatingInput.displayName = "FloatingInput";
 
-export interface FloatingTextareaProps
-  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+export interface FloatingTextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label: string;
   required?: boolean;
 }
 
 const FloatingTextarea = React.forwardRef<HTMLTextAreaElement, FloatingTextareaProps>(
   ({ className, label, required, id, placeholder, ...props }, ref) => {
-    const inputId = id || React.useId();
+    const generatedId = React.useId();
+    const inputId = id || generatedId;
     return (
       <div className="relative pt-7 w-full">
         <textarea

@@ -18,8 +18,8 @@ export function LivePreview({ data }: { data: ResumeData }) {
     const checkMobile = () => {
       setIsMobile(
         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-          navigator.userAgent
-        ) || window.innerWidth < 1024
+          navigator.userAgent,
+        ) || window.innerWidth < 1024,
       );
     };
     checkMobile();
@@ -120,12 +120,8 @@ export function LivePreview({ data }: { data: ResumeData }) {
       )}
 
       {/* Premium stacked paper visual decoration behind the frame */}
-      <div
-        className="absolute inset-0 bg-paper/40 border border-border rounded-sm translate-x-1 translate-y-1.5 rotate-[0.8deg] transition-transform duration-300 group-hover:rotate-[1.5deg] group-hover:translate-x-1.5 group-hover:translate-y-2 pointer-events-none z-0"
-      />
-      <div
-        className="absolute inset-0 bg-paper/80 border border-border rounded-sm -translate-x-1 translate-y-1 -rotate-[0.5deg] transition-transform duration-300 group-hover:-rotate-[1.2deg] group-hover:-translate-x-1.5 group-hover:translate-y-1.5 pointer-events-none z-0"
-      />
+      <div className="absolute inset-0 bg-paper/40 border border-border rounded-sm translate-x-1 translate-y-1.5 rotate-[0.8deg] transition-transform duration-300 group-hover:rotate-[1.5deg] group-hover:translate-x-1.5 group-hover:translate-y-2 pointer-events-none z-0" />
+      <div className="absolute inset-0 bg-paper/80 border border-border rounded-sm -translate-x-1 translate-y-1 -rotate-[0.5deg] transition-transform duration-300 group-hover:-rotate-[1.2deg] group-hover:-translate-x-1.5 group-hover:translate-y-1.5 pointer-events-none z-0" />
 
       <div className="relative w-full h-full bg-paper z-10">
         {loading && (
@@ -136,38 +132,22 @@ export function LivePreview({ data }: { data: ResumeData }) {
         )}
 
         {pdfUrl ? (
-          isMobile ? (
-            <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-paper relative z-10">
-              <div className="w-12 h-12 rounded-full bg-saffron/10 text-saffron flex items-center justify-center mb-3">
-                <FileText className="w-6 h-6" />
-              </div>
-              <h3 className="font-display text-base font-bold text-ink mb-1">Preview Ready</h3>
-              <p className="text-[11px] text-muted-foreground max-w-[280px] leading-relaxed mb-2">
-                Your resume preview is generated and ready.
-                Complete all steps and download your PDF from the final step.
-              </p>
-              <div className="flex items-center gap-1.5 text-[10px] text-emerald-600 font-semibold mt-2">
-                <ShieldCheck className="w-3.5 h-3.5" /> Protected preview — download via Step 5
-              </div>
-            </div>
-          ) : (
-            /* Desktop iframe preview — pointer-events-none blocks all interaction,
-               transparent overlay on top blocks right-click / drag / save-as */
-            <div className="relative w-full h-full">
-              <iframe
-                src={`${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0`}
-                className="w-full h-full border-0 select-none pointer-events-none"
-                title="Exact PDF Preview"
-              />
-              {/* Transparent shield overlay — blocks all direct interaction with iframe */}
-              <div
-                className="absolute inset-0 z-20"
-                onContextMenu={handleContextMenu}
-                onDragStart={(e) => e.preventDefault()}
-                style={{ cursor: "default" }}
-              />
-            </div>
-          )
+          /* Desktop & Mobile iframe preview — pointer-events-none blocks all interaction,
+             transparent overlay on top blocks right-click / drag / save-as */
+          <div className="relative w-full h-full">
+            <iframe
+              src={`${pdfUrl}#zoom=page-fit&view=Fit&toolbar=0&navpanes=0&scrollbar=0`}
+              className="w-full h-full border-0 select-none pointer-events-none"
+              title="Exact PDF Preview"
+            />
+            {/* Transparent shield overlay — blocks all direct interaction with iframe */}
+            <div
+              className="absolute inset-0 z-20"
+              onContextMenu={handleContextMenu}
+              onDragStart={(e) => e.preventDefault()}
+              style={{ cursor: "default" }}
+            />
+          </div>
         ) : (
           <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground italic p-4 text-center">
             Loading live PDF preview…

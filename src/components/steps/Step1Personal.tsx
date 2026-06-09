@@ -65,14 +65,6 @@ export function Step1Personal() {
           onChange={(e) => update("languages", e.target.value)}
           placeholder="e.g. English, Hindi, Kannada"
         />
-        <FloatingInput
-          label="Marital Status"
-          required
-          value={p.maritalStatus}
-          maxLength={50}
-          onChange={(e) => update("maritalStatus", e.target.value)}
-          placeholder="e.g. Single / Married"
-        />
       </div>
     </div>
   );

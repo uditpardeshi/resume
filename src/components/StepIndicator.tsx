@@ -23,20 +23,17 @@ export function StepIndicator({
         const done = s.n < current;
         const active = s.n === current;
         return (
-          <div 
-            key={s.n} 
+          <div
+            key={s.n}
             className={cn(
               "flex items-center min-w-0",
-              i < STEPS.length - 1 ? "flex-1" : "flex-none"
+              i < STEPS.length - 1 ? "flex-1" : "flex-none",
             )}
           >
             <button
               type="button"
               onClick={() => onJump?.(s.n)}
-              className={cn(
-                "flex items-center gap-2 group min-w-0",
-                onJump && "cursor-pointer",
-              )}
+              className={cn("flex items-center gap-2 group min-w-0", onJump && "cursor-pointer")}
             >
               <motion.span
                 animate={{
@@ -51,11 +48,8 @@ export function StepIndicator({
                   "w-7 h-7 shrink-0 rounded-full border flex items-center justify-center text-xs font-medium transition-all",
                   active &&
                     "bg-primary text-primary-foreground border-primary ring-2 ring-saffron/40 ring-offset-1",
-                  done &&
-                    "bg-saffron text-saffron-foreground border-saffron",
-                  !active &&
-                    !done &&
-                    "bg-paper text-muted-foreground border-border",
+                  done && "bg-saffron text-saffron-foreground border-saffron",
+                  !active && !done && "bg-paper text-muted-foreground border-border",
                 )}
               >
                 {done ? (
