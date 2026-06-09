@@ -183,37 +183,65 @@ function LandingPage() {
             className="w-full max-w-[280px] sm:max-w-[360px] aspect-[210/297] paper-card p-4 sm:p-6 relative overflow-hidden flex flex-col justify-between group cursor-pointer transition-all duration-300 hover:border-saffron hover:border-b-[6px] hover:border-r-[3px]"
           >
             {/* Saffron border indicator */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-saffron" />
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-saffron" />
             
-            <div className="space-y-4">
+            <div className="space-y-4 text-left select-none">
+              {/* Header Info */}
               <div className="space-y-1">
-                <div className="h-4 w-28 bg-muted rounded animate-pulse" />
-                <div className="h-2 w-48 bg-muted rounded/60" />
+                <h4 className="font-display font-bold text-sm text-ink tracking-tight">Jonathan Doe</h4>
+                <p className="text-[10px] text-saffron font-semibold leading-none">Senior Frontend Engineer</p>
+                <div className="text-[8px] text-muted-foreground flex flex-wrap gap-x-2 gap-y-0.5 pt-1">
+                  <span>johndoe@email.com</span>
+                  <span>•</span>
+                  <span>+1 (555) 019-2834</span>
+                  <span>•</span>
+                  <span>San Francisco, CA</span>
+                </div>
               </div>
               <div className="h-[1px] bg-border" />
               
-              <div className="space-y-3">
-                <div className="h-2.5 w-16 bg-muted/80 rounded" />
-                <div className="space-y-1.5">
-                  <div className="h-2 w-full bg-muted/40 rounded" />
-                  <div className="h-2 w-[90%] bg-muted/40 rounded" />
+              {/* Experience */}
+              <div className="space-y-2">
+                <h5 className="text-[9px] font-bold text-ink uppercase tracking-wider">Experience</h5>
+                <div className="space-y-1">
+                  <div className="flex justify-between text-[8px] font-semibold text-ink">
+                    <span>Lead Frontend Engineer @ TechCorp</span>
+                    <span className="text-muted-foreground font-normal text-[7.5px]">2022 — Present</span>
+                  </div>
+                  <p className="text-[7.5px] text-muted-foreground leading-relaxed">
+                    Led migration of legacy systems to modern React & Next.js stack, improving performance by 40% and developer productivity by 25%.
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <div className="flex justify-between text-[8px] font-semibold text-ink">
+                    <span>Software Engineer @ InnovateLab</span>
+                    <span className="text-muted-foreground font-normal text-[7.5px]">2020 — 2022</span>
+                  </div>
+                  <p className="text-[7.5px] text-muted-foreground leading-relaxed">
+                    Developed interactive dashboards and built reusable design components utilizing Tailwind CSS and TypeScript.
+                  </p>
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <div className="h-2.5 w-16 bg-muted/80 rounded" />
-                <div className="space-y-1.5">
-                  <div className="h-2 w-full bg-muted/40 rounded" />
-                  <div className="h-2 w-[95%] bg-muted/40 rounded" />
+              {/* Skills */}
+              <div className="space-y-1.5">
+                <h5 className="text-[9px] font-bold text-ink uppercase tracking-wider">Skills</h5>
+                <div className="flex flex-wrap gap-1">
+                  {["React", "TypeScript", "Next.js", "Vite", "TailwindCSS", "Node.js"].map((skill) => (
+                    <span 
+                      key={skill} 
+                      className="px-1.5 py-0.5 bg-paper border border-border text-[7.5px] rounded text-muted-foreground font-medium"
+                    >
+                      {skill}
+                    </span>
+                  ))}
                 </div>
               </div>
             </div>
 
-            <div className="mt-auto pt-6 flex items-center justify-between">
-              <div className="flex gap-1">
-                <div className="h-3 w-8 bg-muted/50 rounded" />
-                <div className="h-3 w-12 bg-muted/50 rounded" />
-                <div className="h-3 w-10 bg-muted/50 rounded" />
+            <div className="mt-auto pt-4 flex items-center justify-between border-t border-border/60">
+              <div className="text-[8px] text-muted-foreground font-medium font-sans">
+                References available upon request
               </div>
               <div className="h-4 w-4 bg-saffron/10 rounded-full flex items-center justify-center">
                 <div className="h-1.5 w-1.5 bg-saffron rounded-full" />
@@ -253,7 +281,7 @@ function LandingPage() {
             }}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: true, margin: "0px" }}
             className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"
           >
             <motion.div 
