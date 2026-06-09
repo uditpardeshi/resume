@@ -8,6 +8,9 @@ export const ResumeSchema = z.object({
     email: z.string().email().or(z.literal("")),
     dob: z.string().max(50),
     languages: z.string().max(150),
+    photo: z.string().optional().or(z.literal("")),
+    photoSize: z.number().min(40).max(150).optional(),
+    photoPosition: z.enum(["left", "right"]).optional(),
   }),
   education: z
     .array(
@@ -117,26 +120,12 @@ export const emptyResume: ResumeData = {
     email: "",
     dob: "",
     languages: "",
+    photo: "",
+    photoSize: 80,
+    photoPosition: "right",
   },
-  education: [
-    {
-      institution: "",
-      degree: "",
-      board: "",
-      fromYear: "",
-      toYear: "",
-      grade: "",
-    },
-  ],
-  experience: [
-    {
-      company: "",
-      role: "",
-      fromDate: "",
-      toDate: "",
-      responsibilities: "",
-    },
-  ],
+  education: [],
+  experience: [],
   summary: "",
   skills: "",
   achievements: "",

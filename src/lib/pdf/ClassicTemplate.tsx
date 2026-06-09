@@ -1,4 +1,4 @@
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
 import type { ResumeData, TemplateId } from "../resume-schema";
 import { cleanText } from "../sanitize";
 
@@ -235,6 +235,8 @@ export function ClassicResume({
 }) {
   const p = data.personal;
   const config = TEMPLATE_CONFIGS[template] || TEMPLATE_CONFIGS.classic;
+  const photoSize = p.photoSize || 80;
+  const photoPosition = p.photoPosition || "right";
 
   const isSerif = config.fontFamily === "Times-Roman";
   const regularFont = isSerif ? "Times-Roman" : "Helvetica";
@@ -730,70 +732,85 @@ export function ClassicResume({
       <Page size="A4" style={styles.page}>
         {/* Title Header Renders based on headerStyle */}
         {config.headerStyle === "graphic" ? (
-          <View style={styles.graphicHeaderBlock}>
-            <Text style={styles.graphicTitle}>
-              {cleanText(p.fullName) || "Resume / Curriculum Vitae"}
-            </Text>
-            <View style={styles.graphicGrid}>
-              <View style={styles.graphicCol}>
-                <Text>
-                  <Text style={styles.graphicLabel}>Address: </Text>
-                  <Text style={styles.graphicValue}>{cleanText(p.address) || "-"}</Text>
-                </Text>
-              </View>
-              <View style={styles.graphicCol}>
-                <Text>
-                  <Text style={styles.graphicLabel}>Mobile: </Text>
-                  <Text style={styles.graphicValue}>{cleanText(p.phone) || "-"}</Text>
-                </Text>
-              </View>
-              <View style={styles.graphicCol}>
-                <Text>
-                  <Text style={styles.graphicLabel}>Email ID: </Text>
-                  <Text style={styles.graphicValue}>{cleanText(p.email) || "-"}</Text>
-                </Text>
-              </View>
-              <View style={styles.graphicCol}>
-                <Text>
-                  <Text style={styles.graphicLabel}>Date of Birth: </Text>
-                  <Text style={styles.graphicValue}>{cleanText(p.dob) || "-"}</Text>
-                </Text>
-              </View>
-              <View style={styles.graphicCol}>
-                <Text>
-                  <Text style={styles.graphicLabel}>Languages: </Text>
-                  <Text style={styles.graphicValue}>{cleanText(p.languages) || "-"}</Text>
-                </Text>
-              </View>
-
-            </View>
-          </View>
-        ) : config.headerStyle === "split" ? (
-          <View style={styles.splitHeader}>
-            <View style={styles.splitLeft}>
-              <Text
-                style={{
-                  fontSize: 18,
-                  fontFamily: boldFont,
-                  color: config.primaryColor,
-                  textTransform: "uppercase",
-                }}
-              >
+          <View style={[styles.graphicHeaderBlock, p.photo ? { flexDirection: "row", alignItems: "center", gap: 12 } : {}]}>
+            {p.photo && photoPosition === "left" && (
+              <Image src={p.photo} style={{ width: photoSize, height: photoSize, borderRadius: 4, objectFit: "cover" }} />
+            )}
+            <View style={{ flex: 1 }}>
+              <Text style={styles.graphicTitle}>
                 {cleanText(p.fullName) || "Resume / Curriculum Vitae"}
               </Text>
-              <Text style={{ fontSize: 9, marginTop: 6, color: "#555555", fontFamily: italicFont }}>
-                Curriculum Vitae
-              </Text>
+              <View style={styles.graphicGrid}>
+                <View style={styles.graphicCol}>
+                  <Text>
+                    <Text style={styles.graphicLabel}>Address: </Text>
+                    <Text style={styles.graphicValue}>{cleanText(p.address) || "-"}</Text>
+                  </Text>
+                </View>
+                <View style={styles.graphicCol}>
+                  <Text>
+                    <Text style={styles.graphicLabel}>Mobile: </Text>
+                    <Text style={styles.graphicValue}>{cleanText(p.phone) || "-"}</Text>
+                  </Text>
+                </View>
+                <View style={styles.graphicCol}>
+                  <Text>
+                    <Text style={styles.graphicLabel}>Email ID: </Text>
+                    <Text style={styles.graphicValue}>{cleanText(p.email) || "-"}</Text>
+                  </Text>
+                </View>
+                <View style={styles.graphicCol}>
+                  <Text>
+                    <Text style={styles.graphicLabel}>Date of Birth: </Text>
+                    <Text style={styles.graphicValue}>{cleanText(p.dob) || "-"}</Text>
+                  </Text>
+                </View>
+                <View style={styles.graphicCol}>
+                  <Text>
+                    <Text style={styles.graphicLabel}>Languages: </Text>
+                    <Text style={styles.graphicValue}>{cleanText(p.languages) || "-"}</Text>
+                  </Text>
+                </View>
+              </View>
             </View>
-            <View style={styles.splitRight}>
-              <Text style={{ fontFamily: boldFont }}>{cleanText(p.address)}</Text>
-              <Text>Phone: {cleanText(p.phone)}</Text>
-              <Text>Email: {cleanText(p.email)}</Text>
-              <Text>
-                DOB: {cleanText(p.dob)}
-              </Text>
-              <Text>Languages: {cleanText(p.languages)}</Text>
+            {p.photo && photoPosition === "right" && (
+              <Image src={p.photo} style={{ width: photoSize, height: photoSize, borderRadius: 4, objectFit: "cover" }} />
+            )}
+          </View>
+        ) : config.headerStyle === "split" ? (
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 12, marginBottom: titleMargin, borderBottomWidth: 2, borderBottomColor: config.primaryColor, paddingBottom: 8 }}>
+            {p.photo && photoPosition === "left" && (
+              <Image src={p.photo} style={{ width: photoSize, height: photoSize, borderRadius: 4, objectFit: "cover" }} />
+            )}
+            <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" }}>
+              <View style={styles.splitLeft}>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    fontFamily: boldFont,
+                    color: config.primaryColor,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {cleanText(p.fullName) || "Resume / Curriculum Vitae"}
+                </Text>
+                <Text style={{ fontSize: 9, marginTop: 6, color: "#555555", fontFamily: italicFont }}>
+                  Curriculum Vitae
+                </Text>
+              </View>
+              <View style={styles.splitRight}>
+                <Text style={{ fontFamily: boldFont }}>{cleanText(p.address)}</Text>
+                <Text>Phone: {cleanText(p.phone)}</Text>
+                <Text>Email: {cleanText(p.email)}</Text>
+                <Text>
+                  DOB: {cleanText(p.dob)}
+                </Text>
+                <Text>Languages: {cleanText(p.languages)}</Text>
+              </View>
             </View>
+            {p.photo && photoPosition === "right" && (
+              <Image src={p.photo} style={{ width: photoSize, height: photoSize, borderRadius: 4, objectFit: "cover" }} />
+            )}
           </View>
         ) : config.headerStyle === "left-accent" ? (
           <View style={styles.leftAccentHeader}>
@@ -859,168 +876,173 @@ export function ClassicResume({
               {getSectionName("personal", "1. Personal Details:-")}
             </Text>
 
-            {config.personalLayout === "list" && (
-              <View style={styles.personalGrid}>
-                <View style={styles.personalRow}>
-                  <Text style={styles.personalLabel}>1) Name:</Text>
-                  <Text style={styles.personalValue}>{cleanText(p.fullName) || "-"}</Text>
-                </View>
-                <View style={styles.personalRow}>
-                  <Text style={styles.personalLabel}>2) Address:</Text>
-                  <Text style={styles.personalValue}>{cleanText(p.address) || "-"}</Text>
-                </View>
-                <View style={styles.personalRow}>
-                  <Text style={styles.personalLabel}>3) Mobile Number:</Text>
-                  <Text style={styles.personalValue}>{cleanText(p.phone) || "-"}</Text>
-                </View>
-                <View style={styles.personalRow}>
-                  <Text style={styles.personalLabel}>4) Email ID:</Text>
-                  <Text style={styles.personalValue}>{cleanText(p.email) || "-"}</Text>
-                </View>
-                <View style={styles.personalRow}>
-                  <Text style={styles.personalLabel}>5) Date of birth:</Text>
-                  <Text style={styles.personalValue}>{cleanText(p.dob) || "-"}</Text>
-                </View>
-                <View style={styles.personalRow}>
-                  <Text style={styles.personalLabel}>6) Language Known:</Text>
-                  <Text style={styles.personalValue}>{cleanText(p.languages) || "-"}</Text>
-                </View>
+            <View style={p.photo ? { flexDirection: photoPosition === "left" ? "row" : "row-reverse", alignItems: "center", gap: 12 } : {}}>
+              {p.photo && (
+                <Image src={p.photo} style={{ width: photoSize, height: photoSize, borderRadius: 4, objectFit: "cover" }} />
+              )}
+              <View style={p.photo ? { flex: 1 } : {}}>
+                {config.personalLayout === "list" && (
+                  <View style={styles.personalGrid}>
+                    <View style={styles.personalRow}>
+                      <Text style={styles.personalLabel}>1) Name:</Text>
+                      <Text style={styles.personalValue}>{cleanText(p.fullName) || "-"}</Text>
+                    </View>
+                    <View style={styles.personalRow}>
+                      <Text style={styles.personalLabel}>2) Address:</Text>
+                      <Text style={styles.personalValue}>{cleanText(p.address) || "-"}</Text>
+                    </View>
+                    <View style={styles.personalRow}>
+                      <Text style={styles.personalLabel}>3) Mobile Number:</Text>
+                      <Text style={styles.personalValue}>{cleanText(p.phone) || "-"}</Text>
+                    </View>
+                    <View style={styles.personalRow}>
+                      <Text style={styles.personalLabel}>4) Email ID:</Text>
+                      <Text style={styles.personalValue}>{cleanText(p.email) || "-"}</Text>
+                    </View>
+                    <View style={styles.personalRow}>
+                      <Text style={styles.personalLabel}>5) Date of birth:</Text>
+                      <Text style={styles.personalValue}>{cleanText(p.dob) || "-"}</Text>
+                    </View>
+                    <View style={styles.personalRow}>
+                      <Text style={styles.personalLabel}>6) Language Known:</Text>
+                      <Text style={styles.personalValue}>{cleanText(p.languages) || "-"}</Text>
+                    </View>
+                  </View>
+                )}
 
+                {config.personalLayout === "grid" && (
+                  <View
+                    style={[
+                      styles.personalGrid,
+                      { flexDirection: "row", flexWrap: "wrap", marginLeft: 5 },
+                    ]}
+                  >
+                    <View style={{ width: "50%", marginBottom: 4 }}>
+                      <Text>
+                        <Text style={{ fontFamily: boldFont }}>Name: </Text>
+                        <Text>{cleanText(p.fullName) || "-"}</Text>
+                      </Text>
+                    </View>
+                    <View style={{ width: "50%", marginBottom: 4 }}>
+                      <Text>
+                        <Text style={{ fontFamily: boldFont }}>Phone: </Text>
+                        <Text>{cleanText(p.phone) || "-"}</Text>
+                      </Text>
+                    </View>
+                    <View style={{ width: "50%", marginBottom: 4 }}>
+                      <Text>
+                        <Text style={{ fontFamily: boldFont }}>Email: </Text>
+                        <Text>{cleanText(p.email) || "-"}</Text>
+                      </Text>
+                    </View>
+                    <View style={{ width: "50%", marginBottom: 4 }}>
+                      <Text>
+                        <Text style={{ fontFamily: boldFont }}>DOB: </Text>
+                        <Text>{cleanText(p.dob) || "-"}</Text>
+                      </Text>
+                    </View>
+                    <View style={{ width: "50%", marginBottom: 4 }}>
+                      <Text>
+                        <Text style={{ fontFamily: boldFont }}>Languages: </Text>
+                        <Text>{cleanText(p.languages) || "-"}</Text>
+                      </Text>
+                    </View>
+
+                    <View style={{ width: "100%", marginBottom: 4 }}>
+                      <Text>
+                        <Text style={{ fontFamily: boldFont }}>Address: </Text>
+                        <Text>{cleanText(p.address) || "-"}</Text>
+                      </Text>
+                    </View>
+                  </View>
+                )}
+
+                {config.personalLayout === "inline-bullets" && (
+                  <Text style={styles.inlineBulletsText}>
+                    {cleanText(p.address) || "-"} • Mobile: {cleanText(p.phone) || "-"} • Email:{" "}
+                    {cleanText(p.email) || "-"} • DOB: {cleanText(p.dob) || "-"} • Languages:{" "}
+                    {cleanText(p.languages) || "-"}
+                  </Text>
+                )}
+
+                {config.personalLayout === "shaded-box" && (
+                  <View style={styles.shadedBox}>
+                    <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+                      <View style={{ width: "50%", marginBottom: 4 }}>
+                        <Text>
+                          <Text style={{ fontFamily: boldFont }}>Name: </Text>
+                          <Text>{cleanText(p.fullName) || "-"}</Text>
+                        </Text>
+                      </View>
+                      <View style={{ width: "50%", marginBottom: 4 }}>
+                        <Text>
+                          <Text style={{ fontFamily: boldFont }}>Phone: </Text>
+                          <Text>{cleanText(p.phone) || "-"}</Text>
+                        </Text>
+                      </View>
+                      <View style={{ width: "50%", marginBottom: 4 }}>
+                        <Text>
+                          <Text style={{ fontFamily: boldFont }}>Email: </Text>
+                          <Text>{cleanText(p.email) || "-"}</Text>
+                        </Text>
+                      </View>
+                      <View style={{ width: "50%", marginBottom: 4 }}>
+                        <Text>
+                          <Text style={{ fontFamily: boldFont }}>DOB: </Text>
+                          <Text>{cleanText(p.dob) || "-"}</Text>
+                        </Text>
+                      </View>
+                      <View style={{ width: "50%", marginBottom: 4 }}>
+                        <Text>
+                          <Text style={{ fontFamily: boldFont }}>Languages: </Text>
+                          <Text>{cleanText(p.languages) || "-"}</Text>
+                        </Text>
+                      </View>
+
+                      <View style={{ width: "100%", marginTop: 2 }}>
+                        <Text>
+                          <Text style={{ fontFamily: boldFont }}>Address: </Text>
+                          <Text>{cleanText(p.address) || "-"}</Text>
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                )}
+
+                {config.personalLayout === "two-col-plain" && (
+                  <View style={{ flexDirection: "row", marginLeft: 5 }}>
+                    <View style={{ flex: 1, gap: 3 }}>
+                      <Text>
+                        <Text style={{ fontFamily: boldFont }}>Name: </Text>
+                        {cleanText(p.fullName)}
+                      </Text>
+                      <Text>
+                        <Text style={{ fontFamily: boldFont }}>Address: </Text>
+                        {cleanText(p.address)}
+                      </Text>
+                      <Text>
+                        <Text style={{ fontFamily: boldFont }}>Mobile: </Text>
+                        {cleanText(p.phone)}
+                      </Text>
+                    </View>
+                    <View style={{ flex: 1, gap: 3 }}>
+                      <Text>
+                        <Text style={{ fontFamily: boldFont }}>Email: </Text>
+                        {cleanText(p.email)}
+                      </Text>
+                      <Text>
+                        <Text style={{ fontFamily: boldFont }}>Date of Birth: </Text>
+                        {cleanText(p.dob)}
+                      </Text>
+                      <Text>
+                        <Text style={{ fontFamily: boldFont }}>Languages Known: </Text>
+                        {cleanText(p.languages)}
+                      </Text>
+                    </View>
+                  </View>
+                )}
               </View>
-            )}
-
-            {config.personalLayout === "grid" && (
-              <View
-                style={[
-                  styles.personalGrid,
-                  { flexDirection: "row", flexWrap: "wrap", marginLeft: 5 },
-                ]}
-              >
-                <View style={{ width: "50%", marginBottom: 4 }}>
-                  <Text>
-                    <Text style={{ fontFamily: boldFont }}>Name: </Text>
-                    <Text>{cleanText(p.fullName) || "-"}</Text>
-                  </Text>
-                </View>
-                <View style={{ width: "50%", marginBottom: 4 }}>
-                  <Text>
-                    <Text style={{ fontFamily: boldFont }}>Phone: </Text>
-                    <Text>{cleanText(p.phone) || "-"}</Text>
-                  </Text>
-                </View>
-                <View style={{ width: "50%", marginBottom: 4 }}>
-                  <Text>
-                    <Text style={{ fontFamily: boldFont }}>Email: </Text>
-                    <Text>{cleanText(p.email) || "-"}</Text>
-                  </Text>
-                </View>
-                <View style={{ width: "50%", marginBottom: 4 }}>
-                  <Text>
-                    <Text style={{ fontFamily: boldFont }}>DOB: </Text>
-                    <Text>{cleanText(p.dob) || "-"}</Text>
-                  </Text>
-                </View>
-                <View style={{ width: "50%", marginBottom: 4 }}>
-                  <Text>
-                    <Text style={{ fontFamily: boldFont }}>Languages: </Text>
-                    <Text>{cleanText(p.languages) || "-"}</Text>
-                  </Text>
-                </View>
-
-                <View style={{ width: "100%", marginBottom: 4 }}>
-                  <Text>
-                    <Text style={{ fontFamily: boldFont }}>Address: </Text>
-                    <Text>{cleanText(p.address) || "-"}</Text>
-                  </Text>
-                </View>
-              </View>
-            )}
-
-            {config.personalLayout === "inline-bullets" && (
-              <Text style={styles.inlineBulletsText}>
-                {cleanText(p.address) || "-"} • Mobile: {cleanText(p.phone) || "-"} • Email:{" "}
-                {cleanText(p.email) || "-"} • DOB: {cleanText(p.dob) || "-"} • Languages:{" "}
-                {cleanText(p.languages) || "-"}
-              </Text>
-            )}
-
-            {config.personalLayout === "shaded-box" && (
-              <View style={styles.shadedBox}>
-                <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-                  <View style={{ width: "50%", marginBottom: 4 }}>
-                    <Text>
-                      <Text style={{ fontFamily: boldFont }}>Name: </Text>
-                      <Text>{cleanText(p.fullName) || "-"}</Text>
-                    </Text>
-                  </View>
-                  <View style={{ width: "50%", marginBottom: 4 }}>
-                    <Text>
-                      <Text style={{ fontFamily: boldFont }}>Phone: </Text>
-                      <Text>{cleanText(p.phone) || "-"}</Text>
-                    </Text>
-                  </View>
-                  <View style={{ width: "50%", marginBottom: 4 }}>
-                    <Text>
-                      <Text style={{ fontFamily: boldFont }}>Email: </Text>
-                      <Text>{cleanText(p.email) || "-"}</Text>
-                    </Text>
-                  </View>
-                  <View style={{ width: "50%", marginBottom: 4 }}>
-                    <Text>
-                      <Text style={{ fontFamily: boldFont }}>DOB: </Text>
-                      <Text>{cleanText(p.dob) || "-"}</Text>
-                    </Text>
-                  </View>
-                  <View style={{ width: "50%", marginBottom: 4 }}>
-                    <Text>
-                      <Text style={{ fontFamily: boldFont }}>Languages: </Text>
-                      <Text>{cleanText(p.languages) || "-"}</Text>
-                    </Text>
-                  </View>
-
-                  <View style={{ width: "100%", marginTop: 2 }}>
-                    <Text>
-                      <Text style={{ fontFamily: boldFont }}>Address: </Text>
-                      <Text>{cleanText(p.address) || "-"}</Text>
-                    </Text>
-                  </View>
-                </View>
-              </View>
-            )}
-
-            {config.personalLayout === "two-col-plain" && (
-              <View style={{ flexDirection: "row", marginLeft: 5 }}>
-                <View style={{ flex: 1, gap: 3 }}>
-                  <Text>
-                    <Text style={{ fontFamily: boldFont }}>Name: </Text>
-                    {cleanText(p.fullName)}
-                  </Text>
-                  <Text>
-                    <Text style={{ fontFamily: boldFont }}>Address: </Text>
-                    {cleanText(p.address)}
-                  </Text>
-                  <Text>
-                    <Text style={{ fontFamily: boldFont }}>Mobile: </Text>
-                    {cleanText(p.phone)}
-                  </Text>
-                </View>
-                <View style={{ flex: 1, gap: 3 }}>
-                  <Text>
-                    <Text style={{ fontFamily: boldFont }}>Email: </Text>
-                    {cleanText(p.email)}
-                  </Text>
-                  <Text>
-                    <Text style={{ fontFamily: boldFont }}>Date of Birth: </Text>
-                    {cleanText(p.dob)}
-                  </Text>
-                  <Text>
-                    <Text style={{ fontFamily: boldFont }}>Languages Known: </Text>
-                    {cleanText(p.languages)}
-                  </Text>
-
-                </View>
-              </View>
-            )}
+            </View>
           </View>
         )}
 
@@ -1035,7 +1057,7 @@ export function ClassicResume({
         ) : null}
 
         {/* 3) Educational Details */}
-        {isShown("education") && (
+        {isShown("education") && data.education && data.education.length > 0 && (
           <View wrap={false} style={styles.sectionContainer}>
             <Text style={getSectionHeadingStyle()}>
               {getSectionName("education", "2) Educational Details :-")}
@@ -1111,7 +1133,7 @@ export function ClassicResume({
         )}
 
         {/* 4) Experience Details */}
-        {isShown("experience") && (
+        {isShown("experience") && data.experience && data.experience.length > 0 && (
           <View wrap={false} style={styles.sectionContainer}>
             <Text style={getSectionHeadingStyle()}>
               {getSectionName("experience", "3) Experience Details:-")}
