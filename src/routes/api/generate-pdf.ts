@@ -1,11 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
-import { renderToBuffer } from "@react-pdf/renderer";
 import { ResumeSchema } from "@/lib/resume-schema";
-import { ClassicResume } from "@/lib/pdf/ClassicTemplate";
-import { ModernResume } from "@/lib/pdf/ModernTemplate";
-import { MinimalResume } from "@/lib/pdf/MinimalTemplate";
-import { GraphicResume } from "@/lib/pdf/GraphicTemplate";
 
 const Body = z.object({
   template: z.enum([
@@ -43,22 +38,11 @@ export const Route = createFileRoute("/api/generate-pdf")({
           });
         }
 
-        // Use the unified parametric ClassicResume which supports all 15 template parameters
-        const templateElement = ClassicResume({
-          data: parsed.resumeData,
-          template: parsed.template,
-        });
-
-        // Render PDF directly.
+        // Render PDF directly using server-side generator.
         let pdfBuf: Uint8Array;
         try {
-          const buf = await Promise.race<Uint8Array>([
-            renderToBuffer(templateElement) as unknown as Promise<Uint8Array>,
-            new Promise<Uint8Array>((_, rej) =>
-              setTimeout(() => rej(new Error("PDF render timeout")), 15_000),
-            ),
-          ]);
-          pdfBuf = buf;
+          const { generatePdfBuffer } = await import("@/lib/pdf/pdf-generator-impl");
+          pdfBuf = await generatePdfBuffer(parsed.resumeData, parsed.template);
         } catch (e) {
           console.error("[generate-pdf] render failure", e);
           return new Response(JSON.stringify({ error: "PDF generation failed" }), {
@@ -82,3 +66,4 @@ export const Route = createFileRoute("/api/generate-pdf")({
     },
   },
 } as any);
+

@@ -1,8 +1,3 @@
-// Simple in-memory rate limiter. Per Worker instance — not perfect across
-// distributed isolates, but adequate as a first defense layer (Cloudflare's
-// edge throttling provides the rest). For production-grade limits across
-// regions you'd back this with Durable Objects or a Redis-style store.
-
 type Bucket = { count: number; resetAt: number };
 const buckets = new Map<string, Bucket>();
 

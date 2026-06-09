@@ -8,7 +8,7 @@ export const Route = createFileRoute("/api/geo")({
   server: {
     handlers: {
       GET: async ({ request }: { request: Request }) => {
-        const { rateLimit, getClientIP } = await import("@/lib/rate-limit.server");
+        const { rateLimit, getClientIP } = await import("@/lib/rate-limit-impl");
         const ip = getClientIP(request);
         const rl = rateLimit(`geo:${ip}`, { max: 30, windowMs: 60_000 });
         if (!rl.ok) {
