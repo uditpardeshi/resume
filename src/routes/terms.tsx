@@ -8,8 +8,24 @@ export const Route = createFileRoute("/terms")({
       { title: "Terms of Service — Resume / CV Builder" },
       {
         name: "description",
+        content:
+          "Review the terms of service for using the Resume / CV Builder. Free, fair use, and privacy-first resume builder conditions.",
+      },
+      { property: "og:title", content: "Terms of Service — Resume / CV Builder" },
+      {
+        property: "og:description",
+        content:
+          "Understand the terms of service, fair use policies, and user responsibilities of our resume builder.",
+      },
+      { property: "og:url", content: "https://resumzy.vercel.app/terms" },
+      { name: "twitter:title", content: "Terms of Service — Resume / CV Builder" },
+      {
+        name: "twitter:description",
         content: "Terms of service: free, no-signup, and privacy-first resume builder conditions.",
       },
+    ],
+    links: [
+      { rel: "canonical", href: "https://resumzy.vercel.app/terms" },
     ],
   }),
   component: TermsRoute,
@@ -18,6 +34,19 @@ export const Route = createFileRoute("/terms")({
 function TermsRoute() {
   return (
     <div className="min-h-screen bg-background text-foreground py-12 px-4 sm:px-6 relative overflow-hidden select-none">
+      {/* JSON-LD WebPage Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "Terms of Service",
+            "url": "https://resumzy.vercel.app/terms",
+            "description": "Review the terms of service for using the Resume / CV Builder. Free, fair use, and privacy-first resume builder conditions."
+          })
+        }}
+      />
       {/* Decorative Blob */}
       <div className="absolute top-[10%] right-[-10%] w-72 h-72 bg-saffron/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[10%] left-[-10%] w-72 h-72 bg-primary/5 rounded-full blur-[120px] pointer-events-none" />

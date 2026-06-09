@@ -8,8 +8,24 @@ export const Route = createFileRoute("/support")({
       { title: "Support & Contact — Resume / CV Builder" },
       {
         name: "description",
+        content:
+          "Need help? Contact support or request new features for our Resume Builder. Report bugs or ask questions here.",
+      },
+      { property: "og:title", content: "Support & Contact — Resume / CV Builder" },
+      {
+        property: "og:description",
+        content:
+          "Get in touch with the developer of Resume / CV Builder. Feature requests, bug reports, and assistance.",
+      },
+      { property: "og:url", content: "https://resumzy.vercel.app/support" },
+      { name: "twitter:title", content: "Support & Contact — Resume / CV Builder" },
+      {
+        name: "twitter:description",
         content: "Need help? Contact support or request new features for our Resume Builder.",
       },
+    ],
+    links: [
+      { rel: "canonical", href: "https://resumzy.vercel.app/support" },
     ],
   }),
   component: SupportRoute,
@@ -18,6 +34,19 @@ export const Route = createFileRoute("/support")({
 function SupportRoute() {
   return (
     <div className="min-h-screen bg-background text-foreground py-12 px-4 sm:px-6 relative overflow-hidden select-none">
+      {/* JSON-LD ContactPage Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ContactPage",
+            "name": "Support & Contact Page",
+            "url": "https://resumzy.vercel.app/support",
+            "description": "Contact support or request new features for our Resume / CV Builder application."
+          })
+        }}
+      />
       {/* Decorative Blob */}
       <div className="absolute top-[10%] right-[-10%] w-72 h-72 bg-saffron/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[10%] left-[-10%] w-72 h-72 bg-primary/5 rounded-full blur-[120px] pointer-events-none" />

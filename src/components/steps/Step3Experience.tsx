@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useResumeStore } from "@/store/useResumeStore";
 import { Plus, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { AiEnhancerButton } from "@/components/ui/AiEnhancerButton";
 
 export function Step3Experience() {
   const { data, setData } = useResumeStore();
@@ -120,6 +121,13 @@ export function Step3Experience() {
                   onChange={(ev) => update(i, { responsibilities: ev.target.value })}
                   placeholder="e.g. Developed and maintained web applications; Worked on API integrations and database queries..."
                 />
+                <div className="flex justify-end mt-1 pb-1">
+                  <AiEnhancerButton
+                    text={e.responsibilities}
+                    onEnhance={(val) => update(i, { responsibilities: val })}
+                    context="experience"
+                  />
+                </div>
               </div>
             </motion.div>
           ))}

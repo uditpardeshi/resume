@@ -2,3 +2,5 @@ User-agent: *
 Allow: /
 Disallow: /api/
 Disallow: /success
+
+Sitemap: https://resumzy.vercel.app/sitemap.xml

@@ -71,16 +71,32 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Resume / CV Builder" },
+      { title: "Resume / CV Builder — Free, Premium & ATS-Friendly" },
       {
         name: "description",
         content:
-          "Build an ATS-friendly resume in 5 steps. Completely free - no login, your data stays in your browser.",
+          "Build an ATS-friendly resume in minutes. Completely free - no login, your data stays in your browser. Fully optimized for applicant tracking systems.",
       },
+      {
+        name: "keywords",
+        content:
+          "resume builder, free resume builder, cv builder, ats-friendly resume, online cv builder, free cv builder, ats cv, professional resume, udit pardeshi",
+      },
+      {
+        name: "robots",
+        content: "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+      },
+      { name: "author", content: "Udit Pardeshi" },
+      { name: "theme-color", content: "#ffffff" },
       { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "Resume / CV Builder" },
+      { property: "og:locale", content: "en_US" },
+      { property: "og:image", content: "https://resumzy.vercel.app/favicon.png" },
       { name: "twitter:card", content: "summary" },
+      { name: "twitter:image", content: "https://resumzy.vercel.app/favicon.png" },
     ],
     links: [
+      { rel: "icon", href: "/favicon.png", type: "image/png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       {
         rel: "preconnect",
@@ -92,6 +108,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap",
       },
       { rel: "stylesheet", href: appCss },
+      { rel: "canonical", href: "https://resumzy.vercel.app" },
     ],
   }),
   shellComponent: RootShell,

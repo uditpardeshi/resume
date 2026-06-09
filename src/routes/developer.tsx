@@ -5,11 +5,28 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/developer")({
   head: () => ({
     meta: [
-      { title: "About the Developer — Resume / CV Builder" },
+      { title: "About Udit Pardeshi — Full Stack Engineer & Designer" },
       {
         name: "description",
-        content: "Learn more about the developer behind the free and ATS-friendly Resume Builder.",
+        content:
+          "Meet Udit Pardeshi, the full stack engineer and designer behind the free, privacy-first, ATS-friendly Resume Builder. Learn about his experience and tech stack.",
       },
+      { property: "og:title", content: "About Udit Pardeshi — Full Stack Engineer & Designer" },
+      {
+        property: "og:description",
+        content:
+          "Meet the developer behind the free, privacy-first, ATS-friendly Resume / CV Builder.",
+      },
+      { property: "og:url", content: "https://resumzy.vercel.app/developer" },
+      { name: "twitter:title", content: "About Udit Pardeshi — Creator of Resume / CV Builder" },
+      {
+        name: "twitter:description",
+        content:
+          "Learn more about Udit Pardeshi, full stack developer building clean, accessible web tools.",
+      },
+    ],
+    links: [
+      { rel: "canonical", href: "https://resumzy.vercel.app/developer" },
     ],
   }),
   component: DeveloperRoute,
@@ -29,6 +46,25 @@ function DeveloperRoute() {
 
   return (
     <div className="min-h-screen bg-background text-foreground py-12 px-4 sm:px-6 relative overflow-hidden select-none">
+      {/* JSON-LD Person Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Person",
+            "name": "Udit Pardeshi",
+            "jobTitle": "Full Stack Engineer & Designer",
+            "url": "https://uditpardeshi.in",
+            "sameAs": [
+              "https://github.com/uditpardeshi",
+              "https://linkedin.com/in/uditpardeshi"
+            ],
+            "description": "Full Stack Engineer and Designer building fast, accessible, and privacy-respecting digital products.",
+            "knowsAbout": ["React", "TypeScript", "Vite", "TanStack Start", "Tailwind CSS", "Nitro", "Framer Motion", "Radix UI"]
+          })
+        }}
+      />
       {/* Decorative Blob */}
       <div className="absolute top-[10%] right-[-10%] w-72 h-72 bg-saffron/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[10%] left-[-10%] w-72 h-72 bg-primary/5 rounded-full blur-[120px] pointer-events-none" />

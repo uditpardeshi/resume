@@ -1,6 +1,7 @@
 import { FloatingTextarea } from "@/components/ui/floating-input";
 import { useResumeStore } from "@/store/useResumeStore";
 import { cn } from "@/lib/utils";
+import { AiEnhancerButton } from "@/components/ui/AiEnhancerButton";
 
 export function Step4Extras() {
   const { data, setData } = useResumeStore();
@@ -55,29 +56,39 @@ export function Step4Extras() {
       });
     };
 
+    const textValue = data[fieldName] || "";
+
     return (
-      <div className="flex flex-wrap items-center gap-1.5 mt-1 pb-3">
-        <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mr-1">
-          Format:
-        </span>
-        {formatsList.map((f) => {
-          const active = currentVal === f.key;
-          return (
-            <button
-              key={f.key}
-              type="button"
-              onClick={() => setFormat(f.key)}
-              className={cn(
-                "text-[10px] px-2 py-0.5 border rounded-md cursor-pointer transition-all select-none font-medium",
-                active
-                  ? "bg-primary border-primary text-primary-foreground font-semibold shadow-sm"
-                  : "bg-paper text-muted-foreground hover:text-foreground border-border hover:bg-secondary/50",
-              )}
-            >
-              {f.label}
-            </button>
-          );
-        })}
+      <div className="flex flex-wrap items-center justify-between gap-1.5 mt-1 pb-3">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mr-1">
+            Format:
+          </span>
+          {formatsList.map((f) => {
+            const active = currentVal === f.key;
+            return (
+              <button
+                key={f.key}
+                type="button"
+                onClick={() => setFormat(f.key)}
+                className={cn(
+                  "text-[10px] px-2 py-0.5 border rounded-md cursor-pointer transition-all select-none font-medium",
+                  active
+                    ? "bg-primary border-primary text-primary-foreground font-semibold shadow-sm"
+                    : "bg-paper text-muted-foreground hover:text-foreground border-border hover:bg-secondary/50",
+                )}
+              >
+                {f.label}
+              </button>
+            );
+          })}
+        </div>
+
+        <AiEnhancerButton
+          text={textValue}
+          onEnhance={(val) => updateField(fieldName, val)}
+          context={fieldName}
+        />
       </div>
     );
   };

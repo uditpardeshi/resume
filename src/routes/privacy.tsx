@@ -9,8 +9,24 @@ export const Route = createFileRoute("/privacy")({
       {
         name: "description",
         content:
+          "Read the privacy policy for Resume / CV Builder. Your data stays entirely in your browser. We never collect, store, or sell your personal information.",
+      },
+      { property: "og:title", content: "Privacy Policy — Resume / CV Builder" },
+      {
+        property: "og:description",
+        content:
+          "Your data is 100% private. We never collect or store your resume inputs. Read our policy.",
+      },
+      { property: "og:url", content: "https://resumzy.vercel.app/privacy" },
+      { name: "twitter:title", content: "Privacy Policy — Resume / CV Builder" },
+      {
+        name: "twitter:description",
+        content:
           "Our privacy policy: your resume data stays entirely in your browser. We do not store or collect your personal information.",
       },
+    ],
+    links: [
+      { rel: "canonical", href: "https://resumzy.vercel.app/privacy" },
     ],
   }),
   component: PrivacyRoute,
@@ -19,6 +35,19 @@ export const Route = createFileRoute("/privacy")({
 function PrivacyRoute() {
   return (
     <div className="min-h-screen bg-background text-foreground py-12 px-4 sm:px-6 relative overflow-hidden select-none">
+      {/* JSON-LD WebPage Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "name": "Privacy Policy",
+            "url": "https://resumzy.vercel.app/privacy",
+            "description": "Our privacy policy: your resume data stays entirely in your browser. We do not store or collect your personal information."
+          })
+        }}
+      />
       {/* Decorative Blob */}
       <div className="absolute top-[10%] right-[-10%] w-72 h-72 bg-saffron/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[10%] left-[-10%] w-72 h-72 bg-primary/5 rounded-full blur-[120px] pointer-events-none" />

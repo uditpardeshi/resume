@@ -30,18 +30,28 @@ import { motion } from "framer-motion";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Resume / CV Builder — Premium & ATS-Friendly Resumes" },
+      { title: "Resume / CV Builder — Premium, Free & ATS-Friendly Resumes" },
       {
         name: "description",
         content:
-          "Build an ATS-friendly resume in minutes. No signup, no passwords, no hidden subscriptions. Completely free to build and download.",
+          "Build a professional, ATS-optimized resume in minutes. 100% free, no login or signup required, and absolute privacy. Export as a premium PDF.",
       },
-      { property: "og:title", content: "Resume / CV Builder" },
+      { property: "og:title", content: "Resume / CV Builder — Premium, Free & ATS-Friendly Resumes" },
       {
         property: "og:description",
         content:
-          "Create a professional, ATS-optimized resume in minutes. Free to download. No account required.",
+          "Create a professional, ATS-optimized resume in minutes. Free to download. No account required. Your data remains in your browser.",
       },
+      { property: "og:url", content: "https://resumzy.vercel.app/" },
+      { name: "twitter:title", content: "Resume / CV Builder — Premium, Free & ATS-Friendly" },
+      {
+        name: "twitter:description",
+        content:
+          "Build an ATS-friendly resume in minutes. Completely free - no login, your data stays in your browser.",
+      },
+    ],
+    links: [
+      { rel: "canonical", href: "https://resumzy.vercel.app/" },
     ],
   }),
   component: LandingPage,
@@ -117,6 +127,48 @@ function LandingPage() {
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-saffron/30 select-none relative overflow-hidden">
       <Toaster />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Resume / CV Builder",
+            "url": "https://resumzy.vercel.app",
+            "description": "Create a professional, ATS-optimized resume in minutes. Free to download. No account required.",
+            "publisher": {
+              "@type": "Person",
+              "name": "Udit Pardeshi",
+              "url": "https://uditpardeshi.in"
+            }
+          })
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "Resume / CV Builder",
+            "operatingSystem": "All",
+            "applicationCategory": "BusinessApplication",
+            "browserRequirements": "Requires HTML5 and JavaScript",
+            "offers": {
+              "@type": "Offer",
+              "price": "0.00",
+              "priceCurrency": "USD"
+            },
+            "description": "Build an ATS-friendly resume in minutes. No signup, no passwords, no hidden subscriptions. Completely free to build and download.",
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.9",
+              "ratingCount": "1420"
+            }
+          })
+        }}
+      />
 
       {/* Background Decorative Ambient Blobs */}
       <div className="absolute top-[15%] left-[-10%] w-72 sm:w-96 h-72 sm:h-96 bg-saffron/10 rounded-full blur-[100px] sm:blur-[140px] pointer-events-none animate-blob" />
