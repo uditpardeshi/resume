@@ -130,6 +130,7 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  /* Temporary disabled AdSense loading to prevent console error 400s
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -149,6 +150,7 @@ function RootComponent() {
       return () => window.removeEventListener("load", loadAdSense);
     }
   }, []);
+  */
 
   return (
     <QueryClientProvider client={queryClient}>
