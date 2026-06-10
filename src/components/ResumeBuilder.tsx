@@ -145,7 +145,7 @@ export function ResumeBuilder() {
   };
 
   return (
-    <div className="h-screen lg:overflow-hidden flex flex-col">
+    <div className="h-[100dvh] lg:overflow-hidden flex flex-col">
       <header className="border-b bg-paper/80 backdrop-blur sticky top-0 z-30 shrink-0">
         <div className="max-w-6xl mx-auto px-3 sm:px-6 py-2.5 sm:py-3 flex flex-col gap-2 sm:gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="font-display text-lg font-semibold tracking-tight text-center sm:text-left">
@@ -162,7 +162,7 @@ export function ResumeBuilder() {
           <div
             ref={formScrollRef}
             style={{ perspective: 1200 }}
-            className="flex-1 overflow-y-auto pr-2 pb-20 lg:pb-4 no-scrollbar"
+            className="flex-1 overflow-y-auto pr-2 pb-32 lg:pb-4 no-scrollbar"
           >
             <AnimatePresence mode="wait" initial={false} custom={direction}>
               <motion.div

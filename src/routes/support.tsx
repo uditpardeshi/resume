@@ -76,7 +76,31 @@ function SupportRoute() {
 
           <div className="space-y-4">
             <h3 className="font-bold text-sm text-ink uppercase tracking-wider font-display">
-              Direct Contact
+              Support Contact
+            </h3>
+            <div className="grid gap-3">
+              <a
+                href="mailto:resumzy@gmail.com"
+                className="flex items-center gap-3 p-3 rounded-lg border border-border hover:border-saffron hover:bg-saffron/5 transition-all duration-200 group cursor-pointer"
+              >
+                <div className="w-8 h-8 rounded-lg bg-saffron/10 text-saffron flex items-center justify-center group-hover:bg-saffron/20 shrink-0 transition-colors">
+                  <Mail className="w-4.5 h-4.5" />
+                </div>
+                <div className="space-y-0.5 text-left">
+                  <div className="font-bold text-xs text-ink group-hover:text-saffron transition-colors">
+                    Main Support Email
+                  </div>
+                  <div className="text-[10px] text-muted-foreground font-medium">
+                    resumzy@gmail.com
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <div className="space-y-4 border-t border-border pt-6">
+            <h3 className="font-bold text-sm text-ink uppercase tracking-wider font-display">
+              Developer Contacts
             </h3>
             <div className="grid gap-3">
               <a
@@ -88,7 +112,7 @@ function SupportRoute() {
                 </div>
                 <div className="space-y-0.5 text-left">
                   <div className="font-bold text-xs text-ink group-hover:text-saffron transition-colors">
-                    Primary Email
+                    Developer - Primary
                   </div>
                   <div className="text-[10px] text-muted-foreground font-medium">
                     uditpardeshi@proton.me
@@ -105,7 +129,7 @@ function SupportRoute() {
                 </div>
                 <div className="space-y-0.5 text-left">
                   <div className="font-bold text-xs text-ink group-hover:text-saffron transition-colors">
-                    Alternative Email
+                    Developer - Alternative
                   </div>
                   <div className="text-[10px] text-muted-foreground font-medium">
                     uditpardeshi2007@gmail.com
