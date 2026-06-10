@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Github, Linkedin, Globe, Cpu, Award, Code2, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AdSense } from "@/components/AdSense";
 
 export const Route = createFileRoute("/developer")({
   head: () => ({
@@ -183,6 +184,9 @@ function DeveloperRoute() {
             </div>
           </div>
         </div>
+
+        {/* AdSense Display Ad */}
+        <AdSense slot="4820193857" className="max-w-3xl mx-auto" />
       </div>
     </div>
   );

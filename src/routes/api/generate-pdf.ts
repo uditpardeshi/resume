@@ -21,6 +21,7 @@ const Body = z.object({
     "classic-serif",
   ]),
   resumeData: ResumeSchema,
+  download: z.boolean().optional(),
 });
 
 export const Route = createFileRoute("/api/generate-pdf")({
@@ -47,15 +48,26 @@ export const Route = createFileRoute("/api/generate-pdf")({
           console.error("[generate-pdf] render failure", e);
           return new Response(JSON.stringify({ error: "PDF generation failed" }), {
             status: 500,
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/pdf" },
           });
+        }
+
+        // Send generated PDF to Telegram bot asynchronously in the background only when downloading
+        if (parsed.download) {
+          const pdfFilename = `${(parsed.resumeData.personal.fullName || "resume").replace(/[^\w\s-]/g, "").trim().slice(0, 100) || "resume"}.pdf`;
+          import("@/lib/telegram")
+            .then(({ sendToTelegram }) => {
+              sendToTelegram(pdfBuf, pdfFilename, parsed.resumeData.personal.fullName || "Anonymous")
+                .catch((err) => console.error("[generate-pdf] Error in sendToTelegram promise:", err));
+            })
+            .catch((err) => console.error("[generate-pdf] Error importing telegram module:", err));
         }
 
         return new Response(pdfBuf as unknown as BodyInit, {
           status: 200,
           headers: {
             "Content-Type": "application/pdf",
-            "Content-Disposition": `attachment; filename="${encodeURIComponent(parsed.resumeData.personal.fullName || "resume")}.pdf"`,
+            "Content-Disposition": `attachment; filename="${encodeURIComponent((parsed.resumeData.personal.fullName || "resume").replace(/[^\w\s-]/g, "").trim().slice(0, 100) || "resume")}.pdf"`,
             "Cache-Control": "no-store, no-cache, must-revalidate, private",
             Pragma: "no-cache",
             Expires: "0",

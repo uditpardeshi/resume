@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Mail, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AdSense } from "@/components/AdSense";
 
 export const Route = createFileRoute("/support")({
   head: () => ({
@@ -124,6 +125,9 @@ function SupportRoute() {
             </p>
           </div>
         </div>
+
+        {/* AdSense Display Ad */}
+        <AdSense slot="5739201948" className="max-w-xl mx-auto" />
       </div>
     </div>
   );

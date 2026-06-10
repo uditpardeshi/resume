@@ -19,6 +19,8 @@ import process from "node:process";
 export function getServerConfig() {
   return {
     nodeEnv: process.env.NODE_ENV,
+    telegramBotToken: process.env.TELEGRAM_BOT_TOKEN,
+    telegramChatId: process.env.TELEGRAM_CHAT_ID,
     // Add server-only values here, e.g.:
     //   databaseUrl: process.env.DATABASE_URL,
     //   stripeSecretKey: process.env.STRIPE_SECRET_KEY,

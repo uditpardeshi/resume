@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
 import { GsapDropdown } from "@/components/GsapDropdown";
+import { AdSense } from "@/components/AdSense";
 import {
   Accordion,
   AccordionContent,
@@ -425,6 +426,9 @@ function LandingPage() {
         </div>
       </section>
 
+      {/* AdSense Homepage Hero Banner Ad */}
+      <AdSense slot="1234567890" className="max-w-6xl mx-auto px-4 sm:px-6" />
+
       {/* Features Grid */}
       <section id="features" className="py-20 border-t border-border bg-paper/30">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
@@ -633,6 +637,9 @@ function LandingPage() {
           </Button>
         </div>
       </section>
+
+      {/* AdSense Homepage Bottom Display Ad */}
+      <AdSense slot="0987654321" className="max-w-6xl mx-auto px-4 sm:px-6" />
 
       {/* Footer */}
       <footer className="border-t border-border py-8 bg-paper/40">

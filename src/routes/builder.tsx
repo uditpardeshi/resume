@@ -68,7 +68,7 @@ function BuilderRoute() {
   }, []);
 
   return (
-    <>
+    <div className="contents">
       {/* JSON-LD WebApplication Schema */}
       <script
         type="application/ld+json"
@@ -92,6 +92,6 @@ function BuilderRoute() {
       />
       <ResumeBuilder />
       <Toaster />
-    </>
+    </div>
   );
 }

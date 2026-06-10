@@ -83,7 +83,7 @@ export function ResumeBuilder() {
       const pdfRes = await fetch("/api/generate-pdf", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resumeData: parsed.data, template }),
+        body: JSON.stringify({ resumeData: parsed.data, template, download: true }),
       });
       if (!pdfRes.ok) {
         const j = (await pdfRes.json().catch(() => ({}))) as { error?: string };

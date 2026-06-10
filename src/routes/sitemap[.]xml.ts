@@ -3,8 +3,13 @@ import { createFileRoute } from "@tanstack/react-router";
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
-      GET: async () => {
-        const origin = "https://resumzy.vercel.app";
+      GET: async ({ request }: { request: Request }) => {
+        const requestUrl = new URL(request.url);
+        // Use the request origin, fallback to hardcoded domain for localhost
+        const origin =
+          requestUrl.origin.includes("localhost") || requestUrl.origin.includes("127.0.0.1")
+            ? "https://resumzy.vercel.app"
+            : requestUrl.origin;
 
         const entries = [
           { path: "/", changefreq: "weekly", priority: "1.0" },
