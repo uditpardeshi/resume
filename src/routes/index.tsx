@@ -31,24 +31,29 @@ import { motion } from "framer-motion";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Resume / CV Builder — Premium, Free & ATS-Friendly Resumes" },
+      { title: "Free Resume / CV Builder — Premium, Free & ATS-Friendly Resume Maker" },
       {
         name: "description",
         content:
-          "Build a professional, ATS-optimized resume in minutes. 100% free, no login or signup required, and absolute privacy. Export as a premium PDF.",
+          "Build a professional, ATS-optimized resume in minutes. 100% free with no login or signup required. Get hired fast with our premium resume creator.",
       },
-      { property: "og:title", content: "Resume / CV Builder — Premium, Free & ATS-Friendly Resumes" },
+      {
+        name: "keywords",
+        content:
+          "free resume builder, ats friendly resume builder, online cv maker, professional resume maker free, best cv builder, resume templates, resume generator without login, no signup resume creator, download resume pdf free, ats cv format, curriculum vitae builder online, career resume builder, free resume creator",
+      },
+      { property: "og:title", content: "Free Resume / CV Builder — Premium & ATS-Friendly Resume Maker" },
       {
         property: "og:description",
         content:
-          "Create a professional, ATS-optimized resume in minutes. Free to download. No account required. Your data remains in your browser.",
+          "Create a professional, ATS-optimized resume in minutes. Free to download, no account required. Your data remains private in your browser.",
       },
       { property: "og:url", content: "https://resumzy.vercel.app/" },
-      { name: "twitter:title", content: "Resume / CV Builder — Premium, Free & ATS-Friendly" },
+      { name: "twitter:title", content: "Free Resume / CV Builder — Premium & ATS-Friendly" },
       {
         name: "twitter:description",
         content:
-          "Build an ATS-friendly resume in minutes. Completely free - no login, your data stays in your browser.",
+          "Build an ATS-friendly resume in minutes. 100% free with no login or signup. Your data stays in your browser.",
       },
     ],
     links: [
@@ -138,6 +143,11 @@ function LandingPage() {
             "name": "Resume / CV Builder",
             "url": "https://resumzy.vercel.app",
             "description": "Create a professional, ATS-optimized resume in minutes. Free to download. No account required.",
+            "genre": "Professional Career Development Tool",
+            "about": {
+              "@type": "Thing",
+              "name": "Resume Building, Curriculum Vitae Maker, ATS Optimization, Career Search"
+            },
             "publisher": {
               "@type": "Person",
               "name": "Udit Pardeshi",
@@ -155,6 +165,7 @@ function LandingPage() {
             "name": "Resume / CV Builder",
             "operatingSystem": "All",
             "applicationCategory": "BusinessApplication",
+            "applicationSubCategory": "Resume Creator, CV Maker, Career Tool",
             "browserRequirements": "Requires HTML5 and JavaScript",
             "offers": {
               "@type": "Offer",
@@ -162,6 +173,7 @@ function LandingPage() {
               "priceCurrency": "USD"
             },
             "description": "Build an ATS-friendly resume in minutes. No signup, no passwords, no hidden subscriptions. Completely free to build and download.",
+            "keywords": "free resume builder, ats friendly resume, online cv maker, professional resume maker free, best cv builder, resume templates, resume generator without login, no signup resume creator, download resume pdf free, ats cv format, curriculum vitae builder online",
             "aggregateRating": {
               "@type": "AggregateRating",
               "ratingValue": "4.9",

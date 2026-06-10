@@ -6,24 +6,29 @@ import { useEffect } from "react";
 export const Route = createFileRoute("/builder")({
   head: () => ({
     meta: [
-      { title: "Build Your Resume Online — Free ATS Resume Creator" },
+      { title: "Build Your Resume Online — Free ATS Resume Creator & CV Maker" },
       {
         name: "description",
         content:
-          "Build a highly optimized ATS-friendly resume in 5 easy steps. Completely free, no registration required. Try our premium CV builder now.",
+          "Create an ATS-friendly resume in 5 steps. Completely free, no login or signup required, and absolute local privacy. Try our professional CV builder now.",
       },
-      { property: "og:title", content: "Build Your Resume Online — Free ATS Resume Creator" },
+      {
+        name: "keywords",
+        content:
+          "free resume creator, online cv maker, ats resume builder, build cv free, no login resume builder, professional cv builder, ats friendly resume templates, create resume online, download resume pdf free, ats compliant resume creator, resume generator, curriculum vitae app",
+      },
+      { property: "og:title", content: "Build Your Resume Online — Free ATS Resume Creator & CV Maker" },
       {
         property: "og:description",
         content:
-          "Interactive online app to build an ATS-friendly resume in 5 steps. Completely free and secure.",
+          "Interactive online app to build an ATS-friendly resume in 5 steps. 100% free and secure with local storage.",
       },
       { property: "og:url", content: "https://resumzy.vercel.app/builder" },
       { name: "twitter:title", content: "Build Your Resume Online — Free ATS Resume Creator" },
       {
         name: "twitter:description",
         content:
-          "Build an ATS-friendly resume in 5 steps. Completely free - no login, your data stays in your browser.",
+          "Build an ATS-friendly resume in 5 steps. Completely free - no login, no passwords, no ads.",
       },
     ],
     links: [
@@ -80,13 +85,15 @@ function BuilderRoute() {
             "url": "https://resumzy.vercel.app/builder",
             "operatingSystem": "All",
             "applicationCategory": "BusinessApplication",
+            "applicationSubCategory": "Resume Creator, CV Maker, Career Tool",
             "browserRequirements": "Requires HTML5 and JavaScript",
             "offers": {
               "@type": "Offer",
               "price": "0.00",
               "priceCurrency": "USD"
             },
-            "description": "Interactive online app to build an ATS-friendly resume in 5 steps. 100% free with local data security."
+            "description": "Interactive online app to build an ATS-friendly resume in 5 steps. 100% free with local data security.",
+            "keywords": "free resume creator, online cv maker, ats resume builder, build cv free, no login resume builder, professional cv builder, ats friendly resume templates, create resume online, download resume pdf free, ats compliant resume creator"
           })
         }}
       />

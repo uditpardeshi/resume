@@ -7,7 +7,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { type ReactNode } from "react";
+import { type ReactNode, useEffect } from "react";
 
 import appCss from "../styles.css?url";
 import { Button } from "@/components/ui/button";
@@ -67,16 +67,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "google-site-verification", content: "--uICDXum29cB3a_AE2l-keeORUN4CD6T65JjHNdbzo" },
-      { title: "Resume / CV Builder — Free, Premium & ATS-Friendly" },
+      { title: "Free Resume / CV Builder — Premium, Free & ATS-Friendly Resume Maker" },
       {
         name: "description",
         content:
-          "Build an ATS-friendly resume in minutes. Completely free - no login, your data stays in your browser. Fully optimized for applicant tracking systems.",
+          "Build an ATS-friendly resume in minutes. 100% free with no login or signup required. Your data remains completely private in your browser.",
       },
       {
         name: "keywords",
         content:
-          "resume builder, free resume builder, cv builder, ats-friendly resume, online cv builder, free cv builder, ats cv, professional resume, udit pardeshi",
+          "resume builder, free resume builder, cv builder, ats-friendly resume, online cv builder, free cv builder, ats cv, professional resume, resume maker free, best free cv builder, resume template download, resume creator, build resume no login, ats compliant resume, job application cv, cv maker without signup, download resume pdf free, udit pardeshi, curriculum vitae maker",
       },
       {
         name: "robots",
@@ -106,13 +106,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: appCss },
       { rel: "canonical", href: "https://resumzy.vercel.app" },
     ],
-    scripts: [
-      {
-        async: true,
-        src: "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3288041764244188",
-        crossOrigin: "anonymous",
-      },
-    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -127,7 +120,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {children}
+        <div className="contents">{children}</div>
         <Scripts />
       </body>
     </html>
@@ -136,6 +129,26 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const loadAdSense = () => {
+      if (document.querySelector('script[src*="adsbygoogle.js"]')) return;
+      const script = document.createElement("script");
+      script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3288041764244188";
+      script.async = true;
+      script.crossOrigin = "anonymous";
+      document.head.appendChild(script);
+    };
+
+    if (document.readyState === "complete") {
+      loadAdSense();
+    } else {
+      window.addEventListener("load", loadAdSense);
+      return () => window.removeEventListener("load", loadAdSense);
+    }
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
