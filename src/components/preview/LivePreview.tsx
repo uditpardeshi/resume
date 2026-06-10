@@ -64,8 +64,7 @@ export function LivePreview({ data }: { data: ResumeData }) {
       const handleLoad = () => {
         const pdfjsLib = (window as any).pdfjsLib;
         if (pdfjsLib) {
-          pdfjsLib.GlobalWorkerOptions.workerSrc =
-            "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+          pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
           setPdfjsLoaded(true);
         }
       };
@@ -81,8 +80,7 @@ export function LivePreview({ data }: { data: ResumeData }) {
     script.onload = () => {
       const pdfjsLib = (window as any).pdfjsLib;
       if (pdfjsLib) {
-        pdfjsLib.GlobalWorkerOptions.workerSrc =
-          "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+        pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
         setPdfjsLoaded(true);
       }
     };
