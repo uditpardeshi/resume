@@ -20,7 +20,7 @@ export function AdSense({
   slot,
   format = "auto",
   responsive = "true",
-  style = { display: "block" },
+  style = { display: "block", width: "100%" },
   className = "",
 }: AdSenseProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -75,7 +75,7 @@ export function AdSense({
     >
       <ins
         className="adsbygoogle"
-        style={style}
+        style={{ width: "100%", ...style }}
         data-ad-client={client}
         data-ad-slot={slot}
         data-ad-format={format}
