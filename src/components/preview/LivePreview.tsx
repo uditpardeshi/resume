@@ -111,7 +111,7 @@ export function LivePreview({ data }: { data: ResumeData }) {
       } finally {
         if (active) setLoading(false);
       }
-    }, 300); // 300ms debounce for near-instant response
+    }, 1000); // 1000ms debounce to save data and reduce server load
 
     return () => {
       active = false;

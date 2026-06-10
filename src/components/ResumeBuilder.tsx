@@ -53,6 +53,16 @@ export function ResumeBuilder() {
   const [direction, setDirection] = useState(1);
   const [prevStep, setPrevStep] = useState(step);
   const formScrollRef = useRef<HTMLDivElement>(null);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const media = window.matchMedia("(min-width: 1024px)");
+    setIsDesktop(media.matches);
+    const listener = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    media.addEventListener("change", listener);
+    return () => media.removeEventListener("change", listener);
+  }, []);
 
   if (step !== prevStep) {
     setDirection(step > prevStep ? 1 : -1);
@@ -241,20 +251,22 @@ export function ResumeBuilder() {
         </section>
 
         <aside className="hidden lg:block h-full overflow-hidden">
-          <div className="h-full flex flex-col overflow-y-auto pr-1 no-scrollbar">
-            <div className="text-xs uppercase tracking-wider text-muted-foreground mb-2 shrink-0">
-              Live preview
+          {isDesktop && (
+            <div className="h-full flex flex-col overflow-y-auto pr-1 no-scrollbar">
+              <div className="text-xs uppercase tracking-wider text-muted-foreground mb-2 shrink-0">
+                Live preview
+              </div>
+              <div className="shrink-0">
+                <LivePreview data={data} />
+              </div>
+              <div className="mt-4">
+                <AtsChecker data={data} template={template} />
+              </div>
+              <p className="text-[11px] text-muted-foreground text-center mt-3 mb-6 shrink-0">
+                Final PDF will be A4, ATS-friendly.
+              </p>
             </div>
-            <div className="shrink-0">
-              <LivePreview data={data} />
-            </div>
-            <div className="mt-4">
-              <AtsChecker data={data} template={template} />
-            </div>
-            <p className="text-[11px] text-muted-foreground text-center mt-3 mb-6 shrink-0">
-              Final PDF will be A4, ATS-friendly.
-            </p>
-          </div>
+          )}
         </aside>
       </main>
     </div>
