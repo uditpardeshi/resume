@@ -27,7 +27,10 @@ const Body = z.object({
 export const Route = createFileRoute("/api/generate-pdf")({
   server: {
     handlers: {
-      POST: async ({ request }: { request: Request }) => {
+      POST: async (ctx: any) => {
+        console.log("[generate-pdf] Context keys:", Object.keys(ctx));
+        console.log("[generate-pdf] ctx.context keys:", Object.keys(ctx.context));
+        const { request } = ctx;
         let parsed;
         try {
           parsed = Body.parse(await request.json());
