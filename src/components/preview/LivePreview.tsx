@@ -48,48 +48,43 @@ export function LivePreview({ data }: { data: ResumeData }) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  // Dynamically load PDF.js from CDN
+  // Wait for PDF.js to load globally
   useEffect(() => {
-    if ((window as any).pdfjsLib) {
-      setPdfjsLoaded(true);
-      return;
-    }
-
-    const existingScript = document.querySelector('script[src*="pdf.min.js"]');
-    if (existingScript) {
-      if ((window as any).pdfjsLib) {
-        setPdfjsLoaded(true);
-        return;
-      }
-      const handleLoad = () => {
-        const pdfjsLib = (window as any).pdfjsLib;
-        if (pdfjsLib) {
-          pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
-          setPdfjsLoaded(true);
-        }
-      };
-      existingScript.addEventListener("load", handleLoad);
-      return () => {
-        existingScript.removeEventListener("load", handleLoad);
-      };
-    }
-
-    const script = document.createElement("script");
-    script.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
-    script.async = true;
-    script.onload = () => {
+    const checkPdfjs = () => {
       const pdfjsLib = (window as any).pdfjsLib;
       if (pdfjsLib) {
         pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
         setPdfjsLoaded(true);
+        return true;
       }
+      return false;
     };
-    script.onerror = (e) => {
-      console.error("Failed to load PDF.js from CDN:", e);
-    };
-    document.body.appendChild(script);
 
-    return () => {};
+    if (checkPdfjs()) return;
+
+    // Check if script is in document, if not, inject it dynamically as safety fallback
+    let script = document.querySelector('script[src*="pdf.min.js"]') as HTMLScriptElement;
+    if (!script) {
+      script = document.createElement("script");
+      script.src = "/pdf.min.js";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+
+    const interval = setInterval(() => {
+      if (checkPdfjs()) {
+        clearInterval(interval);
+      }
+    }, 100);
+
+    const timeout = setTimeout(() => {
+      clearInterval(interval);
+    }, 10000); // Stop polling after 10s
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
   }, []);
 
   // Fetch new preview PDF blob

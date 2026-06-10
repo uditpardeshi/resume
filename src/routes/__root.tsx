@@ -118,6 +118,7 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="en">
       <head>
         <HeadContent />
+        <script src="/pdf.min.js" defer></script>
       </head>
       <body>
         <div className="contents">{children}</div>
