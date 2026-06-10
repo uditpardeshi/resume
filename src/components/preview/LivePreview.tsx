@@ -9,12 +9,14 @@ import { ShieldCheck } from "lucide-react";
 
 export function LivePreview({ data }: { data: ResumeData }) {
   const { template } = useResumeStore();
+  const [pdfData, setPdfData] = useState<Uint8Array | null>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showRightClickMsg, setShowRightClickMsg] = useState(false);
 
   // PDF.js states
   const [pdfjsLoaded, setPdfjsLoaded] = useState(false);
+  const [pdfjsError, setPdfjsError] = useState(false);
   const [pdfDoc, setPdfDoc] = useState<any>(null);
   const [numPages, setNumPages] = useState<number>(0);
   const canvasRefs = useRef<(HTMLCanvasElement | null)[]>([]);
@@ -87,7 +89,7 @@ export function LivePreview({ data }: { data: ResumeData }) {
     };
   }, []);
 
-  // Fetch new preview PDF blob
+  // Fetch new preview PDF data
   useEffect(() => {
     let active = true;
     const timer = setTimeout(async () => {
@@ -99,14 +101,10 @@ export function LivePreview({ data }: { data: ResumeData }) {
           body: JSON.stringify({ resumeData: data, template }),
         });
         if (res.ok && active) {
-          const blob = await res.blob();
-          const url = URL.createObjectURL(blob);
-          setPdfUrl((prev) => {
-            if (prev) {
-              URL.revokeObjectURL(prev);
-            }
-            return url;
-          });
+          const buffer = await res.arrayBuffer();
+          if (active) {
+            setPdfData(new Uint8Array(buffer));
+          }
         }
       } catch (e) {
         console.error("PDF preview generation error:", e);
@@ -121,18 +119,25 @@ export function LivePreview({ data }: { data: ResumeData }) {
     };
   }, [data, template]);
 
-  // Clean up URL object on unmount
+  // Fallback blob URL creation (only generated if PDF.js is missing or fails)
   useEffect(() => {
+    if (!pdfData) {
+      setPdfUrl(null);
+      return;
+    }
+
+    const blob = new Blob([pdfData as any], { type: "application/pdf" });
+    const url = URL.createObjectURL(blob);
+    setPdfUrl(url);
+
     return () => {
-      if (pdfUrl) {
-        URL.revokeObjectURL(pdfUrl);
-      }
+      URL.revokeObjectURL(url);
     };
-  }, [pdfUrl]);
+  }, [pdfData]);
 
   // Parse loaded PDF document using PDF.js
   useEffect(() => {
-    if (!pdfjsLoaded || !pdfUrl) {
+    if (!pdfjsLoaded || !pdfData) {
       setPdfDoc(null);
       setNumPages(0);
       return;
@@ -141,8 +146,10 @@ export function LivePreview({ data }: { data: ResumeData }) {
     let active = true;
     const loadDocument = async () => {
       try {
+        setPdfjsError(false);
         const pdfjsLib = (window as any).pdfjsLib;
-        const loadingTask = pdfjsLib.getDocument(pdfUrl);
+        // Load direct from in-memory typed array, bypassing worker networking completely!
+        const loadingTask = pdfjsLib.getDocument({ data: pdfData });
         const pdf = await loadingTask.promise;
         if (active) {
           setPdfDoc(pdf);
@@ -150,6 +157,9 @@ export function LivePreview({ data }: { data: ResumeData }) {
         }
       } catch (err) {
         console.error("Failed to parse PDF document via PDF.js:", err);
+        if (active) {
+          setPdfjsError(true);
+        }
       }
     };
 
@@ -158,7 +168,7 @@ export function LivePreview({ data }: { data: ResumeData }) {
     return () => {
       active = false;
     };
-  }, [pdfUrl, pdfjsLoaded]);
+  }, [pdfData, pdfjsLoaded]);
 
   // Render pages sequentially when pdfDoc and numPages are ready
   useEffect(() => {
@@ -260,53 +270,61 @@ export function LivePreview({ data }: { data: ResumeData }) {
           </div>
         )}
 
-        {pdfUrl ? (
-          pdfjsLoaded ? (
-            <div className="relative w-full h-full">
-              <div className="w-full h-full overflow-y-auto no-scrollbar flex flex-col gap-4 p-2 bg-neutral-100/50">
-                {Array.from({ length: numPages || 1 }, (_, i) => (
-                  <div
-                    key={i + 1}
-                    className="relative w-full aspect-[210/297] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.05),0_1px_2px_rgba(0,0,0,0.1)] border border-neutral-200/60 rounded-sm overflow-hidden shrink-0"
-                  >
-                    <canvas
-                      ref={(el) => {
-                        canvasRefs.current[i] = el;
-                      }}
-                      className="w-full h-full object-contain pointer-events-none bg-white"
-                    />
-                    {/* Page indicator overlay (subtle at the corner) */}
-                    {numPages > 1 && (
-                      <div className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm text-white text-[9px] px-1.5 py-0.5 rounded font-mono select-none pointer-events-none">
-                        {i + 1} / {numPages}
-                      </div>
-                    )}
-                  </div>
-                ))}
+        {pdfData ? (
+          pdfjsLoaded && !pdfjsError ? (
+            pdfDoc ? (
+              <div className="relative w-full h-full">
+                <div className="w-full h-full overflow-y-auto no-scrollbar flex flex-col gap-4 p-2 bg-neutral-100/50">
+                  {Array.from({ length: numPages }, (_, i) => (
+                    <div
+                      key={i + 1}
+                      className="relative w-full aspect-[210/297] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.05),0_1px_2px_rgba(0,0,0,0.1)] border border-neutral-200/60 rounded-sm overflow-hidden shrink-0"
+                    >
+                      <canvas
+                        ref={(el) => {
+                          canvasRefs.current[i] = el;
+                        }}
+                        className="w-full h-full object-contain pointer-events-none bg-white"
+                      />
+                      {/* Page indicator overlay (subtle at the corner) */}
+                      {numPages > 1 && (
+                        <div className="absolute bottom-2 right-2 bg-black/60 backdrop-blur-sm text-white text-[9px] px-1.5 py-0.5 rounded font-mono select-none pointer-events-none">
+                          {i + 1} / {numPages}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                {/* Transparent shield overlay — blocks all direct interaction with canvas */}
+                <div
+                  className="absolute inset-0 z-20 pointer-events-auto"
+                  onContextMenu={handleContextMenu}
+                  onDragStart={(e) => e.preventDefault()}
+                  style={{ cursor: "default" }}
+                />
               </div>
-              {/* Transparent shield overlay — blocks all direct interaction with canvas */}
-              <div
-                className="absolute inset-0 z-20 pointer-events-auto"
-                onContextMenu={handleContextMenu}
-                onDragStart={(e) => e.preventDefault()}
-                style={{ cursor: "default" }}
-              />
-            </div>
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground italic p-4 text-center">
+                Loading live PDF preview…
+              </div>
+            )
           ) : (
-            /* Fallback to original iframe view if PDF.js fails to load */
-            <div className="relative w-full h-full">
-              <iframe
-                src={`${pdfUrl}#zoom=page-fit&view=Fit&toolbar=0&navpanes=0&scrollbar=0`}
-                className="w-full h-full border-0 select-none pointer-events-none"
-                title="Exact PDF Preview"
-              />
-              <div
-                className="absolute inset-0 z-20 pointer-events-auto"
-                onContextMenu={handleContextMenu}
-                onDragStart={(e) => e.preventDefault()}
-                style={{ cursor: "default" }}
-              />
-            </div>
+            /* Fallback to original iframe view if PDF.js fails to load or errors */
+            pdfUrl && (
+              <div className="relative w-full h-full">
+                <iframe
+                  src={`${pdfUrl}#zoom=page-fit&view=Fit&toolbar=0&navpanes=0&scrollbar=0`}
+                  className="w-full h-full border-0 select-none pointer-events-none"
+                  title="Exact PDF Preview"
+                />
+                <div
+                  className="absolute inset-0 z-20 pointer-events-auto"
+                  onContextMenu={handleContextMenu}
+                  onDragStart={(e) => e.preventDefault()}
+                  style={{ cursor: "default" }}
+                />
+              </div>
+            )
           )
         ) : (
           <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground italic p-4 text-center">
