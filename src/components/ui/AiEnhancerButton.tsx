@@ -5,6 +5,7 @@ import { enhanceText, type ProgressInfo } from "@/lib/ai-enhancer";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "./dialog";
 import { gsap } from "gsap";
+import { trackEvent } from "@/lib/google-insights";
 
 interface AiEnhancerButtonProps {
   text: string;
@@ -43,6 +44,12 @@ export function AiEnhancerButton({ text, onEnhance, context }: AiEnhancerButtonP
       });
       onEnhance(resultText);
       toast.success("Text enhanced successfully! ✨");
+
+      // Track AI enhancement event in GA4
+      trackEvent("use_ai_enhancer", {
+        field_context: context,
+        text_length: text.length,
+      });
     } catch (e: any) {
       toast.error(e.message || "Failed to enhance text.");
       setShowModal(false);

@@ -15,6 +15,7 @@ import { ResumeSchema } from "@/lib/resume-schema";
 import { ArrowLeft, ArrowRight, Eye, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from "./ui/dialog";
 import { toast } from "sonner";
+import { trackEvent } from "@/lib/google-insights";
 
 const STEP_COMPONENTS = [
   Step1Personal,
@@ -58,6 +59,14 @@ export function ResumeBuilder() {
     setPrevStep(step);
   }
 
+  // Track step view on step change
+  useEffect(() => {
+    trackEvent("resume_step_view", {
+      step_number: step,
+      step_name: ["Personal Info", "Education", "Experience", "Extras", "Templates"][step - 1] || `Step ${step}`,
+    });
+  }, [step]);
+
   // Scroll to top on step change
   useEffect(() => {
     if (formScrollRef.current) {
@@ -99,6 +108,35 @@ export function ResumeBuilder() {
       a.remove();
       URL.revokeObjectURL(url);
       toast.success("Resume downloaded successfully!");
+
+      // Track successful download in Google Analytics
+      try {
+        let totalWords = 0;
+        const getWordCount = (str?: string) => {
+          if (!str) return 0;
+          return str.trim().split(/\s+/).filter(Boolean).length;
+        };
+        totalWords += getWordCount(parsed.data.personal.fullName) + getWordCount(parsed.data.personal.address);
+        totalWords += getWordCount(parsed.data.summary) + getWordCount(parsed.data.skills);
+        totalWords += getWordCount(parsed.data.achievements) + getWordCount(parsed.data.strengths) + getWordCount(parsed.data.certifications);
+        parsed.data.education.forEach(e => {
+          totalWords += getWordCount(e.degree) + getWordCount(e.institution);
+        });
+        parsed.data.experience.forEach(e => {
+          totalWords += getWordCount(e.role) + getWordCount(e.company) + getWordCount(e.responsibilities);
+        });
+
+        trackEvent("download_resume", {
+          template: template,
+          word_count: totalWords,
+          has_summary: !!parsed.data.summary,
+          skills_count: parsed.data.skills ? parsed.data.skills.split(/[,\n•·|]+/).filter(Boolean).length : 0,
+          experience_count: parsed.data.experience.length,
+          education_count: parsed.data.education.length,
+        });
+      } catch (err) {
+        console.error("Failed to track download event:", err);
+      }
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "PDF generation failed");
     } finally {

@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useLocation,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -11,6 +12,7 @@ import { type ReactNode, useEffect } from "react";
 
 import appCss from "../styles.css?url";
 import { Button } from "@/components/ui/button";
+import { initGA, trackPageView } from "@/lib/google-insights";
 
 function NotFoundComponent() {
   return (
@@ -62,11 +64,17 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { name: "google-site-verification", content: "--uICDXum29cB3a_AE2l-keeORUN4CD6T65JjHNdbzo" },
+  head: () => {
+    const siteVerification =
+      (typeof process !== "undefined" ? process.env?.VITE_GOOGLE_SITE_VERIFICATION : "") ||
+      (import.meta.env?.VITE_GOOGLE_SITE_VERIFICATION as string) ||
+      "--uICDXum29cB3a_AE2l-keeORUN4CD6T65JjHNdbzo";
+
+    return {
+      meta: [
+        { charSet: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { name: "google-site-verification", content: siteVerification },
       { title: "Free Resume / CV Builder — Premium, Free & ATS-Friendly Resume Maker" },
       {
         name: "description",
@@ -106,7 +114,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "stylesheet", href: appCss },
       { rel: "canonical", href: "https://resumzy.vercel.app" },
     ],
-  }),
+    };
+  },
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
@@ -118,7 +127,6 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="en">
       <head>
         <HeadContent />
-        <script src="/pdf.min.js" defer></script>
       </head>
       <body>
         <div className="contents">{children}</div>
@@ -130,6 +138,17 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const location = useLocation();
+
+  // Initialize GA4 client-side
+  useEffect(() => {
+    initGA();
+  }, []);
+
+  // Track page views on pathname transitions
+  useEffect(() => {
+    trackPageView(location.pathname);
+  }, [location.pathname]);
 
   /* Temporary disabled AdSense loading to prevent console error 400s
   useEffect(() => {
